@@ -6,6 +6,7 @@ import NavbarLogged from './modules/Navbar/NavbarLogged';
 import NavbarNotLogged from './modules/Navbar/NavbarNotLogged';
 import Home from './pages/Home';
 import Authenticate from './pages/Authenticate';
+import NotFound404 from './pages/NotFound404';
 
 import { ThemeContext } from './context/theme.context';
 import './App.css';
@@ -13,15 +14,16 @@ import './App.css';
 function App() {
   const { isDarkThemeOn } = useContext(ThemeContext);
   return (
-    <div className={`App ${isDarkThemeOn ? "" : "light-theme"}`}>
+    <div className={ `App ${ isDarkThemeOn ? "" : "light-theme" }` }>
         <NavbarMaster>
           <NavbarLogged/>
           <NavbarNotLogged />
         </NavbarMaster>
         
         <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/authenticate' element={<Authenticate />} />
+          <Route path='/' element={ <Home /> } />
+          <Route path='/authenticate' element={ <Authenticate /> } />
+          <Route path='*' element={ <NotFound404 /> } />
         </Routes>
 
     </div>
