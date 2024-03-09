@@ -8,6 +8,7 @@ export const AuthProviderWrapper = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   console.log('isLoggedIn', isLoggedIn);
+  console.log("USER INFO", user)
 
   const storeToken = token => {
     localStorage.setItem('authToken', token);

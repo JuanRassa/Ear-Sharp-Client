@@ -1,7 +1,9 @@
 import { useContext } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
+import NavbarMaster from './modules/Navbar/NavbarMaster';
 import NavbarLogged from './modules/Navbar/NavbarLogged';
+import NavbarNotLogged from './modules/Navbar/NavbarNotLogged';
 import Home from './pages/Home';
 import Authenticate from './pages/Authenticate';
 
@@ -12,7 +14,11 @@ function App() {
   const { isDarkThemeOn } = useContext(ThemeContext);
   return (
     <div className={`App ${isDarkThemeOn ? "" : "light-theme"}`}>
-        <NavbarLogged />
+        <NavbarMaster>
+          <NavbarLogged/>
+          <NavbarNotLogged />
+        </NavbarMaster>
+        
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/authenticate' element={<Authenticate />} />

@@ -4,23 +4,20 @@ import { ThemeContext } from '../../context/theme.context';
 import { AuthContext } from '../../context/auth.context';
 
 
-function NavbarLogged() {
+const NavbarNotLogged = () => {
   const { isDarkThemeOn, toggleTheme } = useContext(ThemeContext);
   const { loadingContext, loggedContext, userContext, logoutUser } = useContext(AuthContext);
   
   return (
-    <nav className={`NavbarLogged ${isDarkThemeOn ? "" : "ligh-theme"}`}>
+    <nav className={`NavbarNotLogged ${isDarkThemeOn ? "" : "ligh-theme"}`}>
       <Link to='/'>
         <button>Home</button>
       </Link>
       <Link to='/'>
-        <button>My Courses</button>
+        <button>Join Us!</button>
       </Link>
       <Link to='/'>
-        <button>Teacher Portal</button>
-      </Link>
-      <Link to='/'>
-        <button>Student Portal</button>
+        <button>About Us</button>
       </Link>
       {loggedContext.isLoggedIn && (
         <>
@@ -37,4 +34,4 @@ function NavbarLogged() {
   );
 }
 
-export default NavbarLogged;
+export default NavbarNotLogged;
