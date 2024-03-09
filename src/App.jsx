@@ -1,7 +1,8 @@
 import { useContext } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import NavbarLogged from './components/NavbarLogged';
 import Home from './pages/Home';
+import Authenticate from './pages/Authenticate';
 import Signup from './modules/auth/Signup';
 import Login from './modules/auth/Login';
 // import ProjectsList from './pages/ProjectsList';
@@ -9,21 +10,18 @@ import Login from './modules/auth/Login';
 // import ProjectDetails from './pages/ProjectDetails';
 // import EditProject from './pages/EditProject';
 import { ThemeContext } from './context/theme.context';
-import IsPrivate from './components/IsPrivate';
-import IsAnon from './components/IsAnon';
 import './App.css';
 
 function App() {
   const { theme } = useContext(ThemeContext);
   return (
     <div className={`App ${theme}`}>
-      <Navbar />
+        <NavbarLogged />
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/authenticate' element={<Authenticate />} />
+        </Routes>
 
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/signup' element={<Signup />} />
-        <Route path='/login' element={<Login />} />
-      </Routes>
     </div>
   );
 }

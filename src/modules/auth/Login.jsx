@@ -52,6 +52,7 @@ const Login = () => {
           <label htmlFor='email'>Password</label>
           <input
             type='password'
+            autoComplete='password'
             id='password'
             value={password}
             onChange={e => {
@@ -62,8 +63,8 @@ const Login = () => {
         <button type='submit'>Login</button>
       </form>
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-      <p>Don't have an account yet?</p>
-      <Link to='/signup'>Signup</Link>
+      {/* <p>Don't have an account yet?</p> */}
+      {/* <Link to='/signup'>Signup</Link> */}
     </div>
   );
 };

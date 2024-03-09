@@ -7,22 +7,22 @@ const SwitchLayout = ({children}) => {
   console.log("isFirstChildrenActive", isFirstChildrenActive)
 
   return (
-    <div class="SwitchLayout">
+    <div className="SwitchLayout">
       <div>
-        <div class="dib mr2 helvetica silver">
+        <div className="dib mr2 helvetica silver">
           Enable something
         </div>
-        <div class="relative dib">
+        <div className="relative dib">
           <input 
             type="checkbox" 
-            class="absolute z-5 w-100 h-100 o-0 pointer checkbox" 
+            className="absolute z-5 w-100 h-100 o-0 pointer checkbox" 
             value={isFirstChildrenActive}
             onChange={() => {
               setIsFirstChildrenActive((prev) => !prev)
             }}
           />
-          <div class="relative z-4 dib w3 h2 bg-mid-gray overflow-hidden br4 v-mid bg-animate checkbox-wrapper">
-            <div class="absolute right-auto left-0 w2 h2 br4 bg-silver shadow-4 t-cb bg-animate checkbox-toggle"></div>
+          <div className="relative z-4 dib w3 h2 bg-mid-gray overflow-hidden br4 v-mid bg-animate checkbox-wrapper">
+            <div className="absolute right-auto left-0 w2 h2 br4 bg-silver shadow-4 t-cb bg-animate checkbox-toggle"></div>
           </div>
         </div>
       </div>

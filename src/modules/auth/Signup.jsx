@@ -92,6 +92,7 @@ const Signup = () => {
         <label htmlFor='password'>Password</label>
         <input
           type='password'
+          autoComplete='password'
           name='password'
           id='password'
           value={password}
@@ -155,8 +156,8 @@ const Signup = () => {
         <button type='submit'>Sign Up</button>
       </form>
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-      <p>Already have an account?</p>
-      <Link to='/login'>Login</Link>
+      {/* <p>Already have an account?</p> */}
+      {/* <Link to='/login'>Login</Link> */}
     </div>
   );
 };

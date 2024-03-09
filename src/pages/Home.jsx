@@ -1,10 +1,6 @@
 import { useContext } from 'react';
 import { AuthContext } from '../context/auth.context';
-import IsAnon from '../components/IsAnon';
-import SwitchLayout from '../modules/SwitchLayout/SwitchLayout';
-import Login from '../modules/auth/Login';
-import Signup from '../modules/auth/Signup';
-
+import IsLogged from '../components/IsLogged';
 
 function Home() {
 
@@ -14,13 +10,13 @@ function Home() {
   } = useContext(AuthContext);
 
   return (
-    <div>
-      <h1>Ear Sharp</h1>
-      <SwitchLayout>
-        <Signup /> 
-        <Login/>
-      </SwitchLayout>
-    </div>
+    <>
+      <IsLogged>
+        <div>
+          <h1>Ear Sharp</h1>
+        </div>
+      </IsLogged>
+    </>
   );
 }
 

@@ -15,9 +15,11 @@ export const AuthProviderWrapper = ({ children }) => {
 
   const authenticateUser = async () => {
     const storedToken = localStorage.getItem('authToken');
+    console.log("storedToken", storedToken)
     if (storedToken) {
       try {
         const response = await verify(storedToken);
+        console.log("authenticateUser RESPONSE", response)
         const user = response.data;
         setUser(user);
         setIsLoggedIn(true);

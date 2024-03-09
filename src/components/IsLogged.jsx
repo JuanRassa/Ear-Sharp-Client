@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/auth.context';
 import { Navigate } from 'react-router-dom';
 
-const IsPrivate = props => {
+const IsLogged = props => {
   const {
     loadingContext: { isLoading },
     loggedContext: { isLoggedIn },
@@ -10,11 +10,11 @@ const IsPrivate = props => {
   if (isLoading) {
     <p>Loading...</p>;
   }
-  if (!isLoggedIn) {
-    return <Navigate to={'/login'} />;
-  } else {
+  if (isLoggedIn) {
     return props.children;
+  } else {
+    return <Navigate to={'/authenticate'} />;
   }
 };
 
-export default IsPrivate;
+export default IsLogged;
