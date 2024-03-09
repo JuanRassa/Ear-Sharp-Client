@@ -1,0 +1,10 @@
+.t-cb { transition: all .3s cubic-bezier(.33, 1, .66, 1); }
+
+.checkbox:checked + .checkbox-wrapper {
+  background-color: #19a974;
+
+  .checkbox-toggle { 
+    left: 2rem; 
+    background-color: #ccc; 
+  }
+}

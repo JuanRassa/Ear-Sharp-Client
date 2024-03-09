@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../api/auth.api';
-import { AuthContext } from '../context/auth.context';
+import { login } from '../../api/auth.api';
+import { AuthContext } from '../../context/auth.context';
 
 const Login = () => {
   const [email, setEmail] = useState('');
