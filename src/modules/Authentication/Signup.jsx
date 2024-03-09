@@ -8,10 +8,11 @@ const Signup = () => {
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [is_org_admin, setis_org_admin] = useState("")
+  const [role, setRole] = useState('')
+  const [is_org_admin, setis_org_admin] = useState(false)
   const [organization_admin_id, setOrganization_admin_id] = useState(null)
-  const [is_teacher, setIs_teacher] = useState("")
-  const [is_student, setIs_student] = useState("")
+  const [is_teacher, setIs_teacher] = useState(false)
+  const [is_student, setIs_student] = useState(false)
   const is_super_admin = false
   const exercises_progress = []
   const [error, setError] = useState(null);
@@ -26,6 +27,7 @@ const Signup = () => {
       username,
       email, 
       password,
+      role,
       is_super_admin,
       is_org_admin,
       organization_admin_id,
@@ -35,7 +37,7 @@ const Signup = () => {
     };
     try {
       await signup(user);
-      navigate('/login');
+      navigate('/register-confirmation');
     } catch (error) {
       console.log('Error signingup: ', error);
       setError(error.response.data.message);
@@ -100,12 +102,54 @@ const Signup = () => {
             setPassword(e.target.value);
           }}
         />
-        <p>Select your role</p>
+        <h2>YOUR ROLE</h2>
+        <label htmlFor='OrganizationAdmin'>OrganizationAdmin</label>
+        <input 
+          type='radio' 
+          id='OrganizationAdmin' 
+          name='role' 
+          value="OrganizationAdmin"
+          onChange={() => {
+            setRole("OrganizationAdmin")
+          }}
+        />
+        <label htmlFor='is_teacher'>Teacher</label>
+        <input 
+          type='radio' 
+          id='Teacher' 
+          name='role' 
+          value="Teacher"
+          onChange={() => {
+            setRole("Teacher")
+          }}
+        />
+        <label htmlFor='Student'>Student</label>
+        <input 
+          type='radio' 
+          id='Student' 
+          name='role' 
+          value="Student"
+          onChange={() => {
+            setRole("Student")
+          }}
+        />
+        <label htmlFor='Solo'>Solo</label>
+        <input 
+          type='radio' 
+          id='Solo' 
+          name='role' 
+          value="Solo"
+          onChange={() => {
+            setRole("Solo")
+          }}
+        />
+        <hr></hr>
+        <p>Select your roleTrash</p>
         <label htmlFor='is_org_admin'>Organization Administrator</label>
         <input 
           type='radio' 
           id='is_org_admin' 
-          name='role' 
+          name='roleTrash' 
           value={is_org_admin}
           onChange={() => {
             setis_org_admin(true)
@@ -117,7 +161,7 @@ const Signup = () => {
         <input 
           type='radio' 
           id='is_teacher' 
-          name='role' 
+          name='roleTrash' 
           value={is_teacher}
           onChange={() => {
             setis_org_admin(false)
@@ -129,7 +173,7 @@ const Signup = () => {
         <input 
           type='radio' 
           id='is_student' 
-          name='role' 
+          name='roleTrash' 
           value={is_student}
           onChange={() => {
             setis_org_admin(false)
