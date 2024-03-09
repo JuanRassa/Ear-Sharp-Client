@@ -1,15 +1,15 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { ThemeContext } from '../context/theme.context';
-import { AuthContext } from '../context/auth.context';
+import { ThemeContext } from '../../context/theme.context';
+import { AuthContext } from '../../context/auth.context';
 
 
 function NavbarLogged() {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { isDarkThemeOn, toggleTheme } = useContext(ThemeContext);
   const { loadingContext, loggedContext, userContext, logoutUser } = useContext(AuthContext);
   
   return (
-    <nav className={`NavbarLogged ${theme}`}>
+    <nav className={`NavbarLogged ${isDarkThemeOn ? "" : "ligh-theme"}`}>
       <Link to='/'>
         <button>Home</button>
       </Link>
@@ -29,7 +29,7 @@ function NavbarLogged() {
           </button>
         </>
       )}
-      <button onClick={toggleTheme}>{theme === 'light' ? 'dark' : 'light'}</button>
+      <button onClick={toggleTheme}>{isDarkThemeOn ? 'dark' : 'light'}</button>
     </nav>
   );
 }

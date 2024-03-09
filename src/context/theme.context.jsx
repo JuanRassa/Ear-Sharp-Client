@@ -3,9 +3,9 @@ import { createContext, useState } from 'react';
 export const ThemeContext = createContext();
 
 export const ThemeProviderWrapper = props => {
-  const [theme, setTheme] = useState('light');
+  const [isDarkThemeOn, setIsDarkThemeOn] = useState(true);
   const toggleTheme = () => {
-    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+    setIsDarkThemeOn((prev) => !prev );
   };
-  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{props.children}</ThemeContext.Provider>;
+  return <ThemeContext.Provider value={{ isDarkThemeOn, toggleTheme }}>{props.children}</ThemeContext.Provider>;
 };

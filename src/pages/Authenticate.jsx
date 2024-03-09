@@ -1,8 +1,8 @@
 import React from 'react'
 import IsNotLogged from '../components/IsNotLogged';
 import SwitchLayout from '../modules/SwitchLayout/SwitchLayout';
-import Login from '../modules/auth/Login';
-import Signup from '../modules/auth/Signup';
+import Login from '../modules/Authentication/Login';
+import Signup from '../modules/Authentication/Signup';
 
 const Authenticate = () => {
   return (

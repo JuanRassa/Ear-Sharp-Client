@@ -6,9 +6,9 @@
 body {
   /* height: 100vh; */
   margin: 0.5rem;
-  background-color: #59891a;
   background-color: #4c1e03;
   background-color: #142760;
+  background-color: #59891a;
   overflow: hidden;
 }
 
@@ -24,9 +24,9 @@ body {
   /* height: calc(100vh - 1rem); */
   border-radius: 0.5rem;
   padding: 0.5rem;
-  background-color: #78a635;
   background-color: #6f401a;
   background-color: #344d85;
+  background-color: #78a635;
 
   overflow: hidden;
 }
