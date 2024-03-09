@@ -14,13 +14,16 @@ function NavbarLogged() {
         <button>Home</button>
       </Link>
       <Link to='/'>
-        <button>My Courses</button>
+        <button>My Progress</button>
       </Link>
       <Link to='/'>
         <button>Teacher Portal</button>
       </Link>
       <Link to='/'>
         <button>Student Portal</button>
+      </Link>
+      <Link to='/'>
+        <button>My Account</button>
       </Link>
       {loggedContext.isLoggedIn && (
         <>
