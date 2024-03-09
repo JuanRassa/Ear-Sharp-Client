@@ -7,7 +7,7 @@ function Home() {
 
   return (
     <div>
-      <h1>{user && user.name + ','} Welcome to Project Manager!</h1>
+      <h1>{user && user.name + ','} Ear Sharp!</h1>
     </div>
   );
 }
