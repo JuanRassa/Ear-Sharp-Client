@@ -10,27 +10,27 @@ function NavbarLogged() {
   console.log("userContext", userContext.user)
 
   const portalLinkButtonJSX = () => {
-    if (userContext.user.is_super_admin) {
+    if (userContext.user.role === "SuperAdmin") {
       return (
-        <Link to='/'>
+        <Link to='/admin'>
           <button>Super Admin Portal</button>
         </Link>
       )
-    } else if (userContext.user.is_org_admin) {
+    } else if (userContext.user.role === "OrganizationAdmin") {
       return (
-        <Link to='/'>
+        <Link to='/organization-portal/1'>
           <button>Organization Portal</button>
         </Link>
       )
-    } else if (userContext.user.is_teacher) {
+    } else if (userContext.user.role === "Teacher") {
       return (
-        <Link to='/'>
+        <Link to='/teacher-portal'>
           <button>Teacher Portal</button>
         </Link>
       )
-    } else if (userContext.user.is_student) {
+    } else if (userContext.user.role === "Student") {
       return (
-        <Link to='/'>
+        <Link to='/student-portal'>
           <button>Student Portal</button>
         </Link>
       )
