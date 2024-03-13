@@ -16,11 +16,11 @@ const IsNotLogged = props => {
     return props.children;
   } else {
     if (user.role === "SuperAdmin") return <Navigate to={'/admin'} />;
-    if (user.role === "OrganizationAdmin") return <Navigate to={'/organization-portal/1'} />;
-    if (user.role === "Teacher") return <Navigate to={'/teacher-portal'} />;
-    if (user.role === "Student") return <Navigate to={'/student-portal'} />;
-    if (user.role === "Solor") return <Navigate to={'/my-progress'} />;
-    
+    else if (user.role === "OrganizationAdmin") return <Navigate to={'/organization-portal/1'} />;
+    else if (user.role === "Teacher") return <Navigate to={'/teacher-portal'} />;
+    else if (user.role === "Student") return <Navigate to={'/student-portal'} />;
+    else if (user.role === "Solo") return <Navigate to={'/my-progress'} />;
+    else return <Navigate to={"/"} />
   }
 };
 
