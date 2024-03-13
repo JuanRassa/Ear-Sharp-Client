@@ -14,6 +14,10 @@ export const AuthProviderWrapper = ({ children }) => {
     localStorage.setItem('authToken', token);
   };
 
+  const retrieveToken = () => {
+    return localStorage.getItem("authToken")
+  }
+
   const authenticateUser = async () => {
     const storedToken = localStorage.getItem('authToken');
     console.log("storedToken", storedToken)
@@ -52,6 +56,7 @@ export const AuthProviderWrapper = ({ children }) => {
         loggedContext: { isLoggedIn, setIsLoggedIn },
         userContext: { user, setUser },
         storeToken,
+        retrieveToken,
         authenticateUser,
         logoutUser,
       }}>
