@@ -16,14 +16,37 @@ const Table = ({ headings, dynamicData}) => {
         </div>
       </section>
       <section>
-        {dynamicData.map((dataRow, index) => {
+        {dynamicData.map(dataRow => {
           return (
             <div className="cf ph2-ns">
-              {dataRow[0]}
+              {dataRow.map((data, i) => {
+                  if (dataRow.length - 1 !== i) {
+                    return (
+                      <div className="fl w-100 w-25-ns pa2">
+                        <div className="outline bg-red pv4">{data}</div>
+                      </div>
+                    )
+                  }
+              })}
               <div className="fl w-100 w-25-ns pa2">
-
-                <div className="outline bg-red pv4">dsdas</div>
+                <button 
+                  className="outline bg-red pv4"
+                  onClick={() => {
+                    alert(dataRow[dataRow.length - 1])
+                  }}
+                >
+                  Delete
+                </button>
+                <button 
+                  className="outline bg-red pv4"
+                  onClick={() => {
+                    alert(dataRow[dataRow.length - 1])
+                  }}  
+                >
+                  Edit
+                </button>
               </div>
+
             </div>
           )
         })}

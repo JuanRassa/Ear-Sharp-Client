@@ -9,8 +9,8 @@ const SuperAdmin = () => {
   const [users, setUsers] = useState([])
   const [filteredUsers, setFilteredUsers] = useState()
   const { retrieveToken } = useContext(AuthContext);
-  console.log("filteredUsers!!!", filteredUsers)
-  let arr = []
+  console.log("filteredUsers!!!", users)
+
   const getAllUsers = async () => {
     try {
       const request = await retrieveAllUsers(retrieveToken());
@@ -28,7 +28,7 @@ const SuperAdmin = () => {
   }, [])
 
   useEffect(() => {
-    let newUsers = users.map(({ email, username, role }) => (Object.values({ email, username, role })));
+    let newUsers = users.map(({ email, username, role, _id }) => (Object.values({ email, username, role, _id })));
     console.log("NEW EUSER", newUsers)
     setFilteredUsers(newUsers)
   }, [users])
