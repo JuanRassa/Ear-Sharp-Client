@@ -18,6 +18,14 @@ export const retrieveUserInfoById = (jwt, userId) => {
   });
 };
 
+export const editUserById = (jwt, userId) => {
+  return axios.put(`${baseURL}/users/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${jwt}`
+    }
+  });
+};
+
 export const deleteUserById = (jwt, userId) => {
   return axios.delete(`${baseURL}/users/${userId}`,{
     headers: {
