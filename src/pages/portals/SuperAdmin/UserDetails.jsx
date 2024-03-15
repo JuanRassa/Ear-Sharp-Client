@@ -26,7 +26,6 @@ const UserDetails = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     updateUserInfo()
-    alert(editedOrganizationId)
   }
 
   /*  ****************************** */
