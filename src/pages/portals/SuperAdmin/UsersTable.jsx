@@ -39,14 +39,6 @@ const UsersTable = ({ headings, dynamicData, triggerUserDelete}) => {
                 >
                   Delete
                 </button>
-                <button 
-                  className="outline bg-red pv4"
-                  onClick={() => {
-                    alert(dataRow[dataRow.length - 1])
-                  }}  
-                >
-                  Edit
-                </button>
                 <Link 
                   className="outline bg-red pv4"
                   to={`/admin/user/${dataRow[dataRow.length - 1]}`} 

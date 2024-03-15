@@ -7,7 +7,7 @@ import NavbarNotLogged from './modules/Navbar/NavbarNotLogged';
 import Home from './pages/Home';
 import IsLogged from './components/IsLogged';
 import Authenticate from './pages/Authenticate';
-import UserGate from './components/UserGate';
+import RoleGate from './components/RoleGate';
 import SuperAdmin from './pages/portals/SuperAdmin/SuperAdmin';
 import UserDetails from './pages/portals/SuperAdmin/UserDetails';
 import OrganizationAdmin from './pages/portals/OrganizationAdmin';
@@ -35,9 +35,9 @@ function App() {
             path='/admin/' 
             element={
               <IsLogged>
-                <UserGate allowedRole="SuperAdmin">
+                <RoleGate allowedRole="SuperAdmin">
                   <SuperAdmin />
-                </UserGate> 
+                </RoleGate> 
               </IsLogged>
             } 
           />
@@ -45,9 +45,9 @@ function App() {
             path='/admin/user/:userId' 
             element={
               <IsLogged>
-                <UserGate allowedRole="SuperAdmin">
+                <RoleGate allowedRole="SuperAdmin">
                   <UserDetails />
-                </UserGate> 
+                </RoleGate> 
               </IsLogged>
             } 
           />
@@ -55,9 +55,9 @@ function App() {
             path='/organization-portal/:id' 
             element={
               <IsLogged>
-                <UserGate allowedRole="OrganizationAdmin">
+                <RoleGate allowedRole="OrganizationAdmin">
                   <OrganizationAdmin />
-                </UserGate> 
+                </RoleGate> 
               </IsLogged>
             } 
           />
@@ -65,9 +65,9 @@ function App() {
             path='/teacher-portal' 
             element={ 
               <IsLogged>
-                <UserGate allowedRole="Teacher">
+                <RoleGate allowedRole="Teacher">
                   <TeacherPortal />
-                </UserGate> 
+                </RoleGate> 
               </IsLogged>
             } 
           />
@@ -75,9 +75,9 @@ function App() {
             path='/student-portal' 
             element={ 
               <IsLogged>
-                <UserGate allowedRole="Student">
+                <RoleGate allowedRole="Student">
                   <StudentPortal />
-                </UserGate> 
+                </RoleGate> 
               </IsLogged>
             } 
           />
@@ -85,9 +85,9 @@ function App() {
             path='/my-progress' 
             element={
               <IsLogged>
-                <UserGate allowedRole="Solo">
+                <RoleGate allowedRole="Solo">
                   <MyProgress /> 
-                </UserGate> 
+                </RoleGate> 
               </IsLogged>
             } 
           />

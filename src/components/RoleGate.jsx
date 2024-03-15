@@ -12,18 +12,18 @@ import React, { useContext } from 'react'
 
 import { AuthContext } from '../context/auth.context';
 
-const UserGate = ({children, allowedRole}) => {
+const RoleGate = ({children, allowedRole}) => {
 
   const { userContext } = useContext(AuthContext);
-  console.log("UserGate", userContext)
+  console.log("RoleGate", userContext)
   console.log("allowedRole", allowedRole)
 
   return (
     <>
-      <h1>UserGate</h1>
+      <h1>RoleGate</h1>
       {userContext.user.role === allowedRole ? children : <h3>NOT ALLOWED</h3>}
     </>
   )
 }
 
-export default UserGate
+export default RoleGate
