@@ -18,13 +18,14 @@ const UserDetails = () => {
   const [ editedLastName, setEditedLastName ] = useState(userInfo?.last_name || "")
   const [ editedEmail, setEditedEmail ] = useState(userInfo?.email || "")
   const [ editedRole, setEditedRole ] = useState(userInfo?.role || "")
-  const [ editedOrganizationId, setEditedOrganizationId ] = useState(userInfo?.organization_admin_id || "")
+  const [ editedOrganizationId, setEditedOrganizationId ] = useState(userInfo?.organization_admin_id || "N/A")
   
   const handleInputOnChange = (e, stateSetter) => {
     stateSetter(e.target.value)
   }
   const handleSubmit = (e) => {
     e.preventDefault();
+    updateUserInfo()
     alert(editedOrganizationId)
   }
 
@@ -34,7 +35,7 @@ const UserDetails = () => {
     setEditedName(userInfo?.name)
     setEditedLastName(userInfo?.last_name)
     setEditedEmail(userInfo?.email)
-    setEditedOrganizationId(userInfo?.organization_admin_id)
+    setEditedOrganizationId(userInfo?.organization_admin_id || "N/A")
     setEditedUsername(userInfo?.username)
     setEditedRole(userInfo?.role)
   }
@@ -52,7 +53,9 @@ const UserDetails = () => {
 
   const updateUserInfo = async () => {
     try {
-      const request = await editUserById(retrieveToken(), userId, updatedInfo);
+      const request = await editUserById(retrieveToken(), userId, {
+        username: editedUsername
+      });
       const updatedUser = request.data;
       console.log(updatedUser)
     } catch (error) {
@@ -94,7 +97,7 @@ const UserDetails = () => {
       </div>
 
       <div>
-        <span> Organization ID:</span> <span>{userInfo.organization_admin_id}</span>
+        <span> Organization ID:</span> <span>{userInfo.organization_admin_id || "N/A"}</span>
       </div>
 
 
@@ -131,7 +134,7 @@ const UserDetails = () => {
       <div>
         <label htmlFor='editedRole'> Role:</label> 
         <select id="editedRole" value={ editedRole } onChange={(e) => { handleInputOnChange(e, setEditedRole) }}>
-          <option value="Select one role" selected disabled>Select One Role</option>
+          <option value="Select one role" disabled>Select One Role</option>
           <option value="SuperAdmin" >SuperAdmin</option>
           <option value="OrganizationAdmin" >OrganizationAdmin</option>
           <option value="Teacher" >Teacher</option>
