@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { AuthContext } from '../../context/auth.context'
 
-const Table = ({ headings, dynamicData}) => {
-  console.log("dynamicData", dynamicData)
+const UsersTable = ({ headings, dynamicData, triggerUserDelete}) => {
+  const { retrieveToken } = useContext(AuthContext);
+
   return (
     <div>
       <section>
@@ -32,7 +34,8 @@ const Table = ({ headings, dynamicData}) => {
                 <button 
                   className="outline bg-red pv4"
                   onClick={() => {
-                    alert(dataRow[dataRow.length - 1])
+
+                    triggerUserDelete(dataRow[dataRow.length - 1])
                   }}
                 >
                   Delete
@@ -45,6 +48,14 @@ const Table = ({ headings, dynamicData}) => {
                 >
                   Edit
                 </button>
+                <button 
+                  className="outline bg-red pv4"
+                  onClick={() => {
+                    alert(dataRow[dataRow.length - 1])
+                  }}  
+                >
+                  Details
+                </button>
               </div>
 
             </div>
@@ -55,4 +66,4 @@ const Table = ({ headings, dynamicData}) => {
   )
 }
 
-export default Table
+export default UsersTable

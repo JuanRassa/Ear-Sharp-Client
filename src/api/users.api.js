@@ -7,6 +7,13 @@ export const retrieveAllUsers = (jwt) => {
     headers: {
       Authorization: `Bearer ${jwt}`
     }
-  }
-  );
+  });
+};
+
+export const deleteUserById = (jwt, userId) => {
+  return axios.delete(`${baseURL}/users/${userId}`,{
+    headers: {
+      Authorization: `Bearer ${jwt}`
+    }
+  });
 };

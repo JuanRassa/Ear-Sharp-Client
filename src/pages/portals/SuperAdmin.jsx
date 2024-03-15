@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { AuthContext } from '../../context/auth.context';
-import { retrieveAllUsers } from '../../api/users.api'
+import { retrieveAllUsers, deleteUserById } from '../../api/users.api'
 
-import Table from '../../modules/Table/Table';
+import UsersTable from '../../modules/UsersTable/UsersTable';
 
 
 const SuperAdmin = () => {
@@ -10,6 +10,14 @@ const SuperAdmin = () => {
   const [filteredUsers, setFilteredUsers] = useState()
   const { retrieveToken } = useContext(AuthContext);
   console.log("filteredUsers!!!", users)
+
+  const triggerUserDelete = async (userId) => {
+    const deleteResponse = await deleteUserById(retrieveToken(), userId);
+    console.log(deleteResponse)
+    if(deleteResponse.status === 200) {
+      getAllUsers()
+    }
+  }
 
   const getAllUsers = async () => {
     try {
@@ -29,7 +37,6 @@ const SuperAdmin = () => {
 
   useEffect(() => {
     let newUsers = users.map(({ email, username, role, _id }) => (Object.values({ email, username, role, _id })));
-    console.log("NEW EUSER", newUsers)
     setFilteredUsers(newUsers)
   }, [users])
 
@@ -38,9 +45,10 @@ const SuperAdmin = () => {
   return (  
     <div>
       <h1>SuperAdmin</h1>
-      <Table 
+      <UsersTable 
         headings={["Email", "Username", "Role"]} 
         dynamicData={filteredUsers || []}
+        triggerUserDelete={triggerUserDelete}
       />
     </div>
   )
