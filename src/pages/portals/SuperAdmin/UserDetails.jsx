@@ -50,12 +50,36 @@ const UserDetails = () => {
     }
   }
 
+
   const updateUserInfo = async () => {
+    let newUserInfo = {}
+    if(editedRole === "OrganizationAdmin") {
+      newUserInfo = {
+        name: editedName,
+        last_name: editedLastName,
+        username: editedUsername,
+        email: editedEmail,
+        role: editedRole,
+        organization_admin_id: editedOrganizationId
+      }
+    } else {
+      newUserInfo = {
+        name: editedName,
+        last_name: editedLastName,
+        username: editedUsername,
+        email: editedEmail,
+        role: editedRole
+      }
+    }
+  
+    console.log("NEW USER INFO", newUserInfo)
     try {
-      const request = await editUserById(retrieveToken(), userId, {
-        username: editedUsername
-      });
+      const request = await editUserById(userId, newUserInfo, retrieveToken());
       const updatedUser = request.data;
+      if (request.data.message === "User updated successfuly.") {
+        setIsEditionOn(false)
+        getUserInfo()
+      }
       console.log(updatedUser)
     } catch (error) {
       
@@ -95,9 +119,11 @@ const UserDetails = () => {
         <span> Role:</span> <span>{userInfo.role}</span>
       </div>
 
+      {userInfo.role === "OrganizationAdmin" && (
       <div>
         <span> Organization ID:</span> <span>{userInfo.organization_admin_id || "N/A"}</span>
       </div>
+      )}
 
 
     </div>
@@ -142,10 +168,12 @@ const UserDetails = () => {
         </select>
       </div>
 
+      {editedRole === "OrganizationAdmin" && (
       <div>
         <label htmlFor='editedOrganizationId'> Organization ID:</label> 
         <input type='text' id="editedOrganizationId" value={ editedOrganizationId } onChange={(e) => { handleInputOnChange(e, setEditedOrganizationId) }} />
       </div>
+      )}
       
       {SaveCancelEditionJSX()}
     </form>

@@ -18,12 +18,11 @@ export const retrieveUserInfoById = (jwt, userId) => {
   });
 };
 
-export const editUserById = (jwt, userId, editedUser) => {
-  return axios.put(`${baseURL}/users/${userId}`, {
+export const editUserById = (userId, editedInfo, jwt) => {
+  return axios.put(`${baseURL}/users/${userId}`, editedInfo, {
     headers: {
       Authorization: `Bearer ${jwt}`
     },
-    body: editedUser
   });
 };
 
