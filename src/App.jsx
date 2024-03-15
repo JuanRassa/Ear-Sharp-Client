@@ -8,7 +8,8 @@ import Home from './pages/Home';
 import IsLogged from './components/IsLogged';
 import Authenticate from './pages/Authenticate';
 import UserGate from './components/UserGate';
-import SuperAdmin from './pages/portals/SuperAdmin';
+import SuperAdmin from './pages/portals/SuperAdmin/SuperAdmin';
+import UserDetails from './pages/portals/SuperAdmin/UserDetails';
 import OrganizationAdmin from './pages/portals/OrganizationAdmin';
 import TeacherPortal from './pages/portals/TeacherPortal';
 import StudentPortal  from './pages/portals/StudentPortal';
@@ -36,6 +37,16 @@ function App() {
               <IsLogged>
                 <UserGate allowedRole="SuperAdmin">
                   <SuperAdmin />
+                </UserGate> 
+              </IsLogged>
+            } 
+          />
+          <Route 
+            path='/admin/user/:userId' 
+            element={
+              <IsLogged>
+                <UserGate allowedRole="SuperAdmin">
+                  <UserDetails />
                 </UserGate> 
               </IsLogged>
             } 

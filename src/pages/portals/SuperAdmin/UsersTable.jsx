@@ -1,8 +1,7 @@
-import React, { useContext } from 'react'
-import { AuthContext } from '../../context/auth.context'
+import React from 'react'
+import { Link } from 'react-router-dom';
 
 const UsersTable = ({ headings, dynamicData, triggerUserDelete}) => {
-  const { retrieveToken } = useContext(AuthContext);
 
   return (
     <div>
@@ -20,11 +19,11 @@ const UsersTable = ({ headings, dynamicData, triggerUserDelete}) => {
       <section>
         {dynamicData.map(dataRow => {
           return (
-            <div className="cf ph2-ns">
+            <div key={dataRow[0]} className="cf ph2-ns">
               {dataRow.map((data, i) => {
                   if (dataRow.length - 1 !== i) {
                     return (
-                      <div className="fl w-100 w-25-ns pa2">
+                      <div key={data} className="fl w-100 w-25-ns pa2">
                         <div className="outline bg-red pv4">{data}</div>
                       </div>
                     )
@@ -48,14 +47,12 @@ const UsersTable = ({ headings, dynamicData, triggerUserDelete}) => {
                 >
                   Edit
                 </button>
-                <button 
+                <Link 
                   className="outline bg-red pv4"
-                  onClick={() => {
-                    alert(dataRow[dataRow.length - 1])
-                  }}  
+                  to={`/admin/user/${dataRow[dataRow.length - 1]}`} 
                 >
                   Details
-                </button>
+                </Link>
               </div>
 
             </div>

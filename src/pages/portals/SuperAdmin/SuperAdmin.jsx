@@ -1,19 +1,17 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { AuthContext } from '../../context/auth.context';
-import { retrieveAllUsers, deleteUserById } from '../../api/users.api'
+import { AuthContext } from '../../../context/auth.context';
+import { retrieveAllUsers, deleteUserById } from '../../../api/users.api'
 
-import UsersTable from '../../modules/UsersTable/UsersTable';
-
+import UsersTable from './UsersTable';
 
 const SuperAdmin = () => {
   const [users, setUsers] = useState([])
   const [filteredUsers, setFilteredUsers] = useState()
   const { retrieveToken } = useContext(AuthContext);
-  console.log("filteredUsers!!!", users)
 
   const triggerUserDelete = async (userId) => {
     const deleteResponse = await deleteUserById(retrieveToken(), userId);
-    console.log(deleteResponse)
+
     if(deleteResponse.status === 200) {
       getAllUsers()
     }
