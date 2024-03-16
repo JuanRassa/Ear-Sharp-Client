@@ -13,7 +13,8 @@ import UserDetails from './pages/portals/SuperAdmin/UserDetails';
 import OrganizationAdmin from './pages/portals/OrganizationAdmin';
 import TeacherPortal from './pages/portals/TeacherPortal';
 import StudentPortal  from './pages/portals/StudentPortal';
-import MyProgress from './pages/portals/MyProgress';
+import SoloPortal from './pages/portals/SoloPortal';
+import ExercisePage from './pages/exercises/ExercisePage';
 import NotFound404 from './pages/NotFound404';
 
 import { ThemeContext } from './context/theme.context';
@@ -82,11 +83,21 @@ function App() {
             } 
           />
           <Route 
-            path='/my-progress' 
+            path='/my-portal' 
             element={
               <IsLogged>
                 <RoleGate allowedRole="Solo">
-                  <MyProgress /> 
+                  <SoloPortal /> 
+                </RoleGate> 
+              </IsLogged>
+            } 
+          />
+          <Route 
+            path='/exercises' 
+            element={
+              <IsLogged>
+                <RoleGate allowedRole="Solo">
+                  <ExercisePage /> 
                 </RoleGate> 
               </IsLogged>
             } 

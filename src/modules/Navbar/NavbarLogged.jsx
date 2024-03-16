@@ -36,8 +36,8 @@ function NavbarLogged() {
       )
     } else {  
       return (
-        <Link to='/'>
-          <button>My Progress</button>
+        <Link to='/my-portal'>
+          <button>My Portal</button>
         </Link>
       )
     } 
