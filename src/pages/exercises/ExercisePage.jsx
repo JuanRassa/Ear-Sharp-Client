@@ -1,8 +1,7 @@
 // https://codepen.io/Rumyra/pen/oPxvYB/
 import React from 'react'
 import AudioAndEQ from './AudioAndEQ';
-import AudioAndEQSTATE from './AudioAndEQSTATE';
-import AudioGame from './AudioGame';
+import AudioAndPeakBoost from './AudioAndPeakBoost';
 
 const ExercisePage = () => {
   
@@ -11,8 +10,7 @@ const ExercisePage = () => {
 			{/* <AudioAndEQ></AudioAndEQ> */}
 			<hr/>
 			<hr/>
-			{/* <AudioAndEQSTATE/> */}
-			<AudioGame/>
+			<AudioAndPeakBoost/>
 		</>
   )
 }
