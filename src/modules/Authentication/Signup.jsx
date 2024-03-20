@@ -25,11 +25,7 @@ const Signup = () => {
       email, 
       password,
       role,
-      is_super_admin,
-      is_org_admin,
       organization_admin_id,
-      is_teacher,
-      is_student,
       exercises_progress,
     };
     try {
