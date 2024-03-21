@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 const testAudioFile = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3"
 fetch(testAudioFile)
-const AudioAndPeakBoost = () => {
+const P_AudioAndPeakBoost = () => {
   const [isExerciseRunning, setIsExerciseRunning] = useState(false)
   const [isExerciseDone, setIsExerciseDone] = useState(false)
   const [rounds, setRounds] = useState(2)
@@ -205,7 +205,7 @@ const AudioAndPeakBoost = () => {
       <p>Score: {score}</p>
       {isExerciseDone ? <p>Completed</p> : <p>Round {currentRound} of {rounds}</p>}
       {isExerciseRunning ? 
-        <div className='AudioAndPeakBoost__exercise'>
+        <div className='P_AudioAndPeakBoost__exercise'>
           <div>
             
             <button onClick={() => {
@@ -250,7 +250,7 @@ const AudioAndPeakBoost = () => {
               {isFilterActive ? 'Deactivate Filter' : 'Activate Filter'}
             </button>
           </div>
-          <div className='AudioAndPeakBoost__exercise__options'>
+          <div className='P_AudioAndPeakBoost__exercise__options'>
             <button onClick={() => {
               setChosenFrequency(125);
             }}>
@@ -292,7 +292,7 @@ const AudioAndPeakBoost = () => {
               16000
             </button>
           </div>
-          <div style={{width: "100vw"}} className='flex justify-center'>
+          <div className=' w-100 flex justify-center'>
             <button 
               onClick={() => {
                 handleNextRound()
@@ -309,4 +309,4 @@ const AudioAndPeakBoost = () => {
   );
 }
 
-export default AudioAndPeakBoost
+export default P_AudioAndPeakBoost
