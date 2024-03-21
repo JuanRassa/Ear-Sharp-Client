@@ -31,7 +31,7 @@ const E_AudioAndPeakBoost = () => {
   const handleNextRound = () => {
     // handleStop();
     setIsFilterActive(false)
-    if(chosenFrequency === frequency) incrementScore()
+    if(chosenFrequency === frequencyGuess) incrementScore()
     incrementRound();
 
     setRandomIndex(randomFreqIndex())
@@ -75,9 +75,9 @@ const E_AudioAndPeakBoost = () => {
   const [source, setSource] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [filterNode, setFilterNode] = useState(null);
-  const [frequency, setFrequency] = useState(arrOfFrequencies[5]); // Default frequency = 1000
+  const [frequencyGuess, setFrequencyGuess] = useState(arrOfFrequencies[5]); // Default frequency = 1000
   const [filter, setFilter] = useState(null)
-  const [gain, setGain] = useState(6); // Default gain in dB
+  const [gain, setGain] = useState(9); // Default gain in dB
   const [qValue, setQValue] = useState(3); // Default Q value
   const [isFilterActive, setIsFilterActive] = useState(true);
 
@@ -98,9 +98,9 @@ const E_AudioAndPeakBoost = () => {
     if(filter) return;
     let newFilter = audioContext.createBiquadFilter();
     newFilter.type = 'peaking'; // Bell-shaped filter
-    newFilter.frequency.value = frequency;
+    newFilter.frequency.value = frequencyGuess;
     newFilter.Q.value = qValue;
-    newFilter.gain.value = convertGainToDecibels(gain); // Convert gain to dB
+    newFilter.gain.value = gain; // Convert gain to dB
     setFilter(newFilter)
   }
   
@@ -111,7 +111,11 @@ const E_AudioAndPeakBoost = () => {
 
   console.log("source", source)
   console.log("audioContext", audioContext)
-  console.log("filter", filter)
+
+  console.log("filter whole", filter)
+  console.log("filter freqency", filter?.frequency.value)
+  console.log("filter gain", filter?.gain.value)
+  console.log("FREQ", frequencyGuess)
 
   const handlePlay = () => {
     if (!audioContext) return;
@@ -144,9 +148,6 @@ const E_AudioAndPeakBoost = () => {
     //   .catch(error => console.error('Error loading audio file:', error));
   };
   // Function to convert gain to decibels
-  const convertGainToDecibels = gain => {
-    return 20 * Math.log10(gain); // 20 * log10(gain)
-  };
   const handleStop = () => {
     if (source) {
       audioContext.suspend()
@@ -154,21 +155,20 @@ const E_AudioAndPeakBoost = () => {
     }
   };
   const handleFrequencyChange = event => {
-    setFrequency(parseInt(arrOfFrequencies[randomIndex - 1], 10));
-    if (filterNode) {
-      filterNode.frequency.value = parseInt(arrOfFrequencies[randomIndex - 1], 10);
-    }
+    console.log("RANDOM INDEX", randomIndex)
+    setFrequencyGuess(parseInt(arrOfFrequencies[randomIndex - 1], 10));
+    filter.frequency.value = parseInt( arrOfFrequencies[randomIndex - 1], 10);
   };
   const handleGainChange = event => {
-    setGain(parseFloat(event.target.value));
-    if (filterNode) {
-      filterNode.gain.value = convertGainToDecibels(parseFloat(event.target.value));
+    setGain(event.target.value);
+    if (filter) {
+      filter.gain.value = event.target.value;
     }
   };
   const handleQValueChange = event => {
-    setQValue(parseFloat(event.target.value));
-    if (filterNode) {
-      filterNode.Q.value = parseFloat(event.target.value);
+    setQValue(event.target.value);
+    if (filter) {
+      filter.Q.value = event.target.value;
     }
   };
   const toggleFilter = () => {
@@ -176,10 +176,11 @@ const E_AudioAndPeakBoost = () => {
   };
 
 
-  const changeFreq = () => {
+  const changeFreq = (indexOfFreq) => {
     if(filter) {
       console.log(filter.frequency)
-      filter.frequency.value = 500
+      setFrequencyGuess(parseInt(arrOfFrequencies[indexOfFreq], 10));
+      filter.frequency.value = parseInt(arrOfFrequencies[indexOfFreq], 10)
     }
   }
 
@@ -203,6 +204,7 @@ const E_AudioAndPeakBoost = () => {
       connectFilter()
     }
   }, [filter])
+
   useEffect(() => {
     if(isFilterActive) {
       source?.connect(filter);
@@ -212,42 +214,6 @@ const E_AudioAndPeakBoost = () => {
       filter?.disconnect(audioContext.destination);
     }
   }, [isFilterActive])
-
-
-
-
-  // useEffect(() => {
-
-  //   if (audioContext) {
-  //   // if (audioContext && isFilterActive) {
-  //     const filter = audioContext.createBiquadFilter();
-  //     filter.type = 'peaking'; // Bell-shaped filter
-  //     filter.frequency.value = frequency;
-  //     filter.Q.value = qValue;
-  //     filter.gain.value = convertGainToDecibels(gain); // Convert gain to dB
-
-  //     setFilterNode(filter);
-  //   }
-  // }, [audioContext, frequency, gain, qValue, ]);
-  // }, [audioContext, frequency, gain, qValue, isFilterActive]);
-  useEffect(() => {
-    if (filterNode) {
-      filterNode.frequency.value = frequency;
-    }
-  }, [filterNode, frequency]);
-
-  useEffect(() => {
-    if (filterNode) {
-      filterNode.Q.value = qValue;
-    }
-  }, [filterNode, qValue]);
-
-  useEffect(() => {
-    if (filterNode) {
-      filterNode.gain.value = convertGainToDecibels(gain);
-    }
-  }, [filterNode, gain]);
-
   //  ↑↑  AUDIO'S LOGIC  ↑↑
 
   return (
@@ -260,13 +226,48 @@ const E_AudioAndPeakBoost = () => {
       {isExerciseRunning ? 
         <div className='E_AudioAndPeakBoost__exercise'>
           <div>
-            <button onClick={() => { changeFreq() }}>500</button>
+          <div className='E_AudioAndPeakBoost__exercise__options w-100 flex justify-center'>
             <button onClick={() => {
-              setRandomIndex(randomFreqIndex())
-              handleFrequencyChange()
-            }} >
-              Choosen Freq: {frequency} Hz
+              changeFreq(0);
+            }}>
+              125
             </button>
+            <button onClick={() => {
+              changeFreq(1);
+            }}>
+              250
+            </button>
+            <button onClick={() => {
+              changeFreq(2);
+            }}>
+              500
+            </button>
+            <button onClick={() => {
+              changeFreq(3);
+            }}>
+              1000
+            </button>
+            <button onClick={() => {
+              changeFreq(4);
+            }}>
+              2000
+            </button>
+            <button onClick={() => {
+              changeFreq(5);
+            }}>
+              4000
+            </button>
+            <button onClick={() => {
+              changeFreq(6);
+            }}>
+              8000
+            </button>
+            <button onClick={() => {
+              changeFreq(7);
+            }}>
+              16000
+            </button>
+          </div>
           </div>
           <div>
             <label htmlFor="gainInput">Gain (dB):</label>
@@ -304,8 +305,9 @@ const E_AudioAndPeakBoost = () => {
               {isFilterActive ? 'Deactivate Filter' : 'Activate Filter'}
             </button>
             <button onClick={()=>{buildUpFilter()}}>SET UP FILTER</button>
+            {/* <button onClick={() => {connectFilter()}}>CONNECT FILTER</button> */}
           </div>
-          <div className='E_AudioAndPeakBoost__exercise__options'>
+          <div className='E_AudioAndPeakBoost__exercise__options w-100 flex justify-center'>
             <button onClick={() => {
               setChosenFrequency(125);
             }}>

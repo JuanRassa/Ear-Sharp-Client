@@ -2,6 +2,7 @@
 import React from 'react'
 import AudioAndEQ from './AudioAndEQ';
 import E_AudioAndPeakBoost from './E_AudioAndPeakBoost';
+import P_AudioAndPeakBoost from '../practice/P_AudioAndPeakBoost';
 
 const ExercisePage = () => {
   
