@@ -5,7 +5,7 @@ fetch(testAudioFile)
 const AudioAndPeakBoost = () => {
   const [isExerciseRunning, setIsExerciseRunning] = useState(false)
   const [isExerciseDone, setIsExerciseDone] = useState(false)
-  const [rounds, setRounds] = useState(4)
+  const [rounds, setRounds] = useState(2)
   const [currentRound, setCurrentRound] = useState(0)
   const [score, setScore] = useState(0)
   const [chosenFrequency, setChosenFrequency] = useState(null)
@@ -40,6 +40,7 @@ const AudioAndPeakBoost = () => {
 
   const handleNextRound = () => {
     handleStop();
+    if(chosenFrequency === frequency) incrementScore()
     incrementRound();
     setRandomIndex(randomFreqIndex);
     setRandomIndex(Math.floor(Math.random() * 8) + 1)
@@ -52,16 +53,6 @@ const AudioAndPeakBoost = () => {
     }
   }, [currentRound])
   
-  useEffect(() => {
-    console.log("-------")
-    console.log("chosenFrequency", chosenFrequency)
-    console.log("typeof chosenFrequency", typeof chosenFrequency)
-    console.log("frequency", frequency)
-    console.log("typeof frequency", typeof frequency)
-    console.log("-------")
-    if(chosenFrequency === frequency) incrementScore()
-
-  }, [chosenFrequency])
 
   useEffect(() => {
     if (isExerciseDone) alert(`Done. Your score is: ${score}`)
@@ -88,7 +79,7 @@ const AudioAndPeakBoost = () => {
   const [source, setSource] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [filterNode, setFilterNode] = useState(null);
-  const [frequency, setFrequency] = useState(arrOfFrequencies[1]); // Default frequency
+  const [frequency, setFrequency] = useState(arrOfFrequencies[3]); // Default frequency = 1000
   const [gain, setGain] = useState(9); // Default gain in dB
   const [qValue, setQValue] = useState(2); // Default Q value
   const [isFilterActive, setIsFilterActive] = useState(false);
@@ -212,7 +203,7 @@ const AudioAndPeakBoost = () => {
         handleBeginExercise()
       }}>{isExerciseRunning ? "Stop" : "Begin"}</button>
       <p>Score: {score}</p>
-      <p>Round {currentRound} of {rounds}</p>
+      {isExerciseDone ? <p>Completed</p> : <p>Round {currentRound} of {rounds}</p>}
       {isExerciseRunning ? 
         <div className='AudioAndPeakBoost__exercise'>
           <div>
@@ -262,51 +253,52 @@ const AudioAndPeakBoost = () => {
           <div className='AudioAndPeakBoost__exercise__options'>
             <button onClick={() => {
               setChosenFrequency(125);
-              handleNextRound()
             }}>
               125
             </button>
             <button onClick={() => {
               setChosenFrequency(250);
-              handleNextRound()
             }}>
               250
             </button>
             <button onClick={() => {
               setChosenFrequency(500);
-              handleNextRound()
             }}>
               500
             </button>
             <button onClick={() => {
               setChosenFrequency(1000);
-              handleNextRound()
             }}>
               1000
             </button>
             <button onClick={() => {
               setChosenFrequency(2000);
-              handleNextRound()
             }}>
               2000
             </button>
             <button onClick={() => {
               setChosenFrequency(4000);
-              handleNextRound()
             }}>
               4000
             </button>
             <button onClick={() => {
               setChosenFrequency(8000);
-              handleNextRound()
             }}>
               8000
             </button>
             <button onClick={() => {
               setChosenFrequency(16000);
-              handleNextRound()
             }}>
               16000
+            </button>
+          </div>
+          <div style={{width: "100vw"}} className='flex justify-center'>
+            <button 
+              onClick={() => {
+                handleNextRound()
+              }}
+            >
+              Check answer
             </button>
           </div>
         </div>
