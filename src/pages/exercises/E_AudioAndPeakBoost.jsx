@@ -10,8 +10,8 @@ import Aconcagua_Cocuy from "../../assets/audio/10.Aconcagua-Cocuy.mp3"
 // const testAudioFile = "https://cdn.freesound.org/previews/725/725677_4409240-hq.mp3" // "jazz"
 // const testAudioFile = Himalaya
 // const testAudioFile = Alpes
-const testAudioFile = Paramo
-// const testAudioFile = Aconcagua_Cocuy
+// const testAudioFile = Paramo
+const testAudioFile = Aconcagua_Cocuy
 
 fetch(testAudioFile)
 const E_AudioAndPeakBoost = () => {
@@ -116,9 +116,9 @@ const E_AudioAndPeakBoost = () => {
     newFilter.gain.value = gain; // Convert gain to dB
     setFilter(newFilter)
   }
-  const connectFilter = () => {
-    source.connect(filter);
-    filter.connect(audioContext.destination);
+  const connectSource_Filter_Analyser = () => {
+    // source.connect(filter);
+    // filter.connect(audioContext.destination);
     setIsFilterConnected(true)
   }
   console.log("audioContext", audioContext)
@@ -187,7 +187,7 @@ const E_AudioAndPeakBoost = () => {
   
   //  ↓↓ When filter ✓ Connect Filter to the Audio Context ↓↓
   useEffect(() => {
-    if(filter) connectFilter()
+    if(filter) connectSource_Filter_Analyser()
   }, [filter])
 
 //  ↓↓ When filter connection ✓ start audio and end loading stauts ↓↓
@@ -202,7 +202,7 @@ useEffect(() => {
     const canvas = canvasRef.current;
     //config canvas
     canvas.width = window.innerWidth * 0.7;
-    canvas.height = 600;
+    canvas.height = 300;
     const ctx = canvas.getContext("2d");
 
     const analyser = audioContext.createAnalyser();
@@ -230,83 +230,59 @@ useEffect(() => {
     //core logic for the visualizer
     const timeouts = [];
     const renderFrame = () => {
-      // ctx.fillStyle = "rgba(0,0,0,0)";
-      // requestAnimationFrame(renderFrame);
-      // x = 0;
-      
-      // analyser.getByteFrequencyData(dataArray);
-      
-      // ctx.fillRect(0, 0, WIDTH, HEIGHT);
-      
-      // for (let i = 0; i < bufferLength; i++) {
-      //   //color based upon frequency
-      //   barHeight = dataArray[i];
-      //   let 
-      //     r = barHeight + 22 * (i / bufferLength),
-      //     g = 333 * (i / bufferLength),
-      //     b = 47;
-      //   ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
-      //   ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
-      //   x += barWidth + 1;
-
-
-
       ctx.fillStyle = "rgba(0,0,0,0)";
       requestAnimationFrame(renderFrame);
       x = 0;
-      
+  
       analyser.getByteFrequencyData(dataArray);
-      
+  
       ctx.fillRect(0, 0, WIDTH, HEIGHT);
-      
-      const minFrequency = 20; // Minimum frequency (Hz)
-      const maxFrequency = 20000; // Maximum frequency (Hz)
-      const logMin = Math.log(minFrequency);
-      const logMax = Math.log(maxFrequency);
-    
+
       for (let i = 0; i < bufferLength; i++) {
-        // Calculate the logarithmic index for the current frequency bin
-        const logIndex = (Math.log(i + 1) / Math.log(bufferLength)) * bufferLength;
-    
-        // Calculate the corresponding frequency for the current index
-        const frequency = Math.exp(logIndex * (logMax - logMin) / bufferLength + logMin);
-    
-        // Use the frequency to find the closest bin in the dataArray
-        const closestIndex = Math.floor(frequency / (audioContext.sampleRate / bufferLength));
-    
-        // Use the closest bin to get the corresponding frequency data
-        const logFrequencyData = dataArray[closestIndex];
-    
         // Color based upon frequency
-        barHeight = logFrequencyData;
-        let 
-          r = barHeight + 60 * (i / bufferLength),
-          g = 333 * (i / bufferLength),
+        barHeight = dataArray[i];  
+        let r, g, b;
+        // Assign blue colors for the specified frequencies
+        if (
+          i === Math.floor(bufferLength * 63 / 20000) ||  // 63Hz
+          i === Math.floor(bufferLength * 125 / 20000) || // 125Hz
+          i === Math.floor(bufferLength * 250 / 20000) || // 250Hz
+          i === Math.floor(bufferLength * 500 / 20000) || // 500Hz
+          i === Math.floor(bufferLength * 1000 / 20000) || // 1000Hz
+          i === Math.floor(bufferLength * 2000 / 20000) || // 2000Hz
+          i === Math.floor(bufferLength * 4000 / 20000) || // 4000Hz
+          i === Math.floor(bufferLength * 8000 / 20000) || // 8000Hz
+          i === Math.floor(bufferLength * 16000 / 20000)   // 16000Hz
+        ) {
+          r = 125;
+          g = 0;
+          b = 255; // Blue color
+        } else {
+          // Previous colors for other frequencies
+          r = barHeight + 22 * (i / bufferLength);
+          g = 333 * (i / bufferLength);
           b = 47;
+        }
+
         ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
-    
         // Draw the bar
         ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
         x += barWidth + 1;
-
-        
         //Allows visualizer to overlay on a background/video by clearing the rects after painting.
         let timer = setTimeout(() => {
           ctx.clearRect(0, 0, WIDTH, HEIGHT);
         }, 50);
         timeouts.push(timer);
       }
-
-
     }
     //Clears the accumulating timeouts.
-  setTimeout(() => {
-    for (let i = 0; i < timeouts.length; i++) {
-      return clearTimeout(timeouts[i]);
-    }
-  }, 51);
-
-  renderFrame();
+    setTimeout(() => {
+      for (let i = 0; i < timeouts.length; i++) {
+        return clearTimeout(timeouts[i]);
+      }
+    }, 51);
+    
+    renderFrame();
   };
 
 }, [isFilterConnected])

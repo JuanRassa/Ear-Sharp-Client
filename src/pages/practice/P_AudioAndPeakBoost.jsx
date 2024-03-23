@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Himalaya from "../../assets/audio/4.Himalaya.mp3"
 import Alpes from "../../assets/audio/8.Alpes.mp3"
 import Paramo from "../../assets/audio/9.Paramo.mp3"
@@ -116,12 +116,12 @@ const E_AudioAndPeakBoost = () => {
     newFilter.gain.value = gain; // Convert gain to dB
     setFilter(newFilter)
   }
-  const connectFilter = () => {
-    source.connect(filter);
-    filter.connect(audioContext.destination);
+  const connectSource_Filter_Analyser = () => {
+    // source.connect(filter);
+    // filter.connect(audioContext.destination);
     setIsFilterConnected(true)
   }
-
+  console.log("audioContext", audioContext)
   console.log("filter freqency", filter?.frequency.value)
   console.log("filter gain", filter?.gain.value)
   console.log("FREQ", frequencyGuess)
@@ -187,15 +187,104 @@ const E_AudioAndPeakBoost = () => {
   
   //  ↓↓ When filter ✓ Connect Filter to the Audio Context ↓↓
   useEffect(() => {
-    if(filter) connectFilter()
+    if(filter) connectSource_Filter_Analyser()
   }, [filter])
 
 //  ↓↓ When filter connection ✓ start audio and end loading stauts ↓↓
+const canvasRef = useRef(null);
 useEffect(() => {
   if (isFilterConnected) {
     source.start()
     setIsLoadingAudio(false)
   }
+
+  if (isFilterConnected) {
+    const canvas = canvasRef.current;
+    //config canvas
+    canvas.width = window.innerWidth * 0.7;
+    canvas.height = 300;
+    const ctx = canvas.getContext("2d");
+
+    const analyser = audioContext.createAnalyser();
+    // source.connect(analyser);
+    // analyser.connect(audioContext.destination);
+    source.connect(filter).connect(audioContext.destination); // Connect filter to both destination and AnalyserNode
+    filter.connect(analyser); // Connect filter to AnalyserNode
+    analyser.connect(audioContext.destination); // Connect AnalyserNode to destination
+
+
+    // Define the desired frequency range (20Hz to 20000Hz)
+    const minFrequency = 20;
+    const maxFrequency = 20000;
+    const fftSize = Math.pow(2, Math.ceil(Math.log2(maxFrequency / minFrequency)));
+    analyser.fftSize = fftSize;
+
+    const bufferLength = analyser.frequencyBinCount,
+      dataArray = new Uint8Array(bufferLength),
+      WIDTH = canvas.width,
+      HEIGHT = canvas.height,
+      barWidth = (WIDTH / bufferLength) * 2.5;
+    let barHeight = null,
+      x = null;
+  
+    //core logic for the visualizer
+    const timeouts = [];
+    const renderFrame = () => {
+      ctx.fillStyle = "rgba(0,0,0,0)";
+      requestAnimationFrame(renderFrame);
+      x = 0;
+  
+      analyser.getByteFrequencyData(dataArray);
+  
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+      for (let i = 0; i < bufferLength; i++) {
+        // Color based upon frequency
+        barHeight = dataArray[i];  
+        let r, g, b;
+        // Assign blue colors for the specified frequencies
+        if (
+          i === Math.floor(bufferLength * 63 / 20000) ||  // 63Hz
+          i === Math.floor(bufferLength * 125 / 20000) || // 125Hz
+          i === Math.floor(bufferLength * 250 / 20000) || // 250Hz
+          i === Math.floor(bufferLength * 500 / 20000) || // 500Hz
+          i === Math.floor(bufferLength * 1000 / 20000) || // 1000Hz
+          i === Math.floor(bufferLength * 2000 / 20000) || // 2000Hz
+          i === Math.floor(bufferLength * 4000 / 20000) || // 4000Hz
+          i === Math.floor(bufferLength * 8000 / 20000) || // 8000Hz
+          i === Math.floor(bufferLength * 16000 / 20000)   // 16000Hz
+        ) {
+          r = 125;
+          g = 0;
+          b = 255; // Blue color
+        } else {
+          // Previous colors for other frequencies
+          r = barHeight + 22 * (i / bufferLength);
+          g = 333 * (i / bufferLength);
+          b = 47;
+        }
+
+        ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+        // Draw the bar
+        ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
+        x += barWidth + 1;
+        //Allows visualizer to overlay on a background/video by clearing the rects after painting.
+        let timer = setTimeout(() => {
+          ctx.clearRect(0, 0, WIDTH, HEIGHT);
+        }, 50);
+        timeouts.push(timer);
+      }
+    }
+    //Clears the accumulating timeouts.
+    setTimeout(() => {
+      for (let i = 0; i < timeouts.length; i++) {
+        return clearTimeout(timeouts[i]);
+      }
+    }, 51);
+    
+    renderFrame();
+  };
+
 }, [isFilterConnected])
 
   //  ↓↓ Handle on/off of the filter by toggling gain between 0 and 12 ↓↓
@@ -215,10 +304,12 @@ useEffect(() => {
   }, [isFilterActive])
   //  ↑↑  AUDIO'S LOGIC  ↑↑
 
+
+
   return (
     <div>
       {isLoadingAudio ? <h1>LOADING...</h1> : <button onClick={handleBeginExercise}>I am ready!</button>}
-
+      <canvas ref={canvasRef} className="canvas"></canvas>
       <p>Score: {score}</p>
       {isExerciseDone ? <p>Completed</p> : <p>Round {currentRound} of {rounds}</p>}
       {isExerciseRunning ? 
@@ -368,6 +459,7 @@ useEffect(() => {
         :   
         <></>
       }
+      
     </div>
   );
 }
