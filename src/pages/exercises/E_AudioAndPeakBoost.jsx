@@ -168,6 +168,7 @@ const E_AudioAndPeakBoost = () => {
 
   //  ↓↓ Set Audio Context and Clean Up Audio Context when unmounting ↓↓
   useEffect(() => {
+    if(audioContext !== null) audioContext.close()
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     setAudioContext(audioCtx);
     return () => {
