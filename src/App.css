@@ -22,13 +22,17 @@ body {
 
 #root {
   /* height: calc(100vh - 1rem); */
-  border-radius: 0.5rem;
-  padding: 0.5rem;
+  /* border-radius: 0.5rem; */
+  /* padding: 0.5rem; */
   background-color: #6f401a;
   background-color: #344d85;
   background-color: #78a635;
 
   overflow: hidden;
+  background-image: url(../src/assets/lily-studio-photo.jpg);
+  background-position: 55% center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .App {
@@ -37,8 +41,23 @@ body {
   padding: 12px;
   background-color: #232323;
   /* background-color: #8b5c2c; */
-  /* background-color: #4b6ba4; */
+  background-color: #4b6ba4;
   max-height: 98vh;
   overflow: auto;
+
+
+/* From https://css.glass */
+background: rgba(12, 72, 4, 0.43);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(6.1px);
+-webkit-backdrop-filter: blur(6.1px);
+
+/* From https://css.glass */
+background: rgba(251, 251, 251, 0.38);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(5.6px);
+-webkit-backdrop-filter: blur(5.6px);
 }
 /* ---- ---- ---- ---- ---- ---- ---- ---- */

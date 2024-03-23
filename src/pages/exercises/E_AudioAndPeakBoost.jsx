@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react'
+import Himalaya from "../../assets/audio/4.Himalaya.mp3"
+import Alpes from "../../assets/audio/8.Alpes.mp3"
+import Paramo from "../../assets/audio/9.Paramo.mp3"
+import Aconcagua_Cocuy from "../../assets/audio/10.Aconcagua-Cocuy.mp3"
 
 // const testAudioFile = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3"
 // const testAudioFile = "https://cdn.freesound.org/previews/263/263860_3162775-hq.mp3"
-const testAudioFile = "https://cdn.freesound.org/previews/129/129652_1105584-hq.mp3" // cool drums
+// const testAudioFile = "https://cdn.freesound.org/previews/129/129652_1105584-hq.mp3" // cool drums
+// const testAudioFile = "https://cdn.freesound.org/previews/725/725677_4409240-hq.mp3" // "jazz"
+// const testAudioFile = Himalaya
+// const testAudioFile = Alpes
+// const testAudioFile = Paramo
+const testAudioFile = Aconcagua_Cocuy
+
 fetch(testAudioFile)
 const E_AudioAndPeakBoost = () => {
   //  ↓↓  GAME'S LOGIC  ↓↓
@@ -21,14 +31,13 @@ const E_AudioAndPeakBoost = () => {
     setScore((prev) => prev + 1)
   }
   const randomFreqIndex = () => {
-    return Math.floor(Math.random() * 8) + 1
+    return Math.floor(Math.random() * 9) + 1
   }
   const handleBeginExercise = () => {
     setCurrentRound(0)
     if (currentRound === 0) incrementRound()
     setIsExerciseRunning(!isExerciseRunning)
     setRandomIndex(randomFreqIndex())
-    source.connect(audioContext.destination);
   }
   const handleNextRound = () => {
     setIsFilterActive(false)
@@ -63,6 +72,7 @@ const E_AudioAndPeakBoost = () => {
   // ****************************************************************************
   //  ↓↓  AUDIO'S LOGIC  ↓↓
   const arrOfFrequencies = [
+    63,
     125,
     250,
     500,
@@ -112,10 +122,6 @@ const E_AudioAndPeakBoost = () => {
     setIsFilterConnected(true)
   }
 
-  console.log("source", source)
-  console.log("audioContext", audioContext)
-
-  console.log("filter whole", filter)
   console.log("filter freqency", filter?.frequency.value)
   console.log("filter gain", filter?.gain.value)
   console.log("FREQ", frequencyGuess)
@@ -222,40 +228,45 @@ useEffect(() => {
             <button onClick={() => {
               changeFreq(0);
             }}>
-              125
+              63
             </button>
             <button onClick={() => {
               changeFreq(1);
             }}>
-              250
+              125
             </button>
             <button onClick={() => {
               changeFreq(2);
             }}>
-              500
+              250
             </button>
             <button onClick={() => {
               changeFreq(3);
             }}>
-              1000
+              500
             </button>
             <button onClick={() => {
               changeFreq(4);
             }}>
-              2000
+              1000
             </button>
             <button onClick={() => {
               changeFreq(5);
             }}>
-              4000
+              2000
             </button>
             <button onClick={() => {
               changeFreq(6);
             }}>
-              8000
+              4000
             </button>
             <button onClick={() => {
               changeFreq(7);
+            }}>
+              8000
+            </button>
+            <button onClick={() => {
+              changeFreq(8);
             }}>
               16000
             </button>
@@ -296,9 +307,13 @@ useEffect(() => {
             <button onClick={toggleFilter}>
               {isFilterActive ? 'Deactivate Filter' : 'Activate Filter'}
             </button>
-            <button onClick={()=>{buildUpFilter()}}>SET UP FILTER</button>
           </div>
           <div className='E_AudioAndPeakBoost__exercise__options w-100 flex justify-center'>
+            <button onClick={() => {
+              setChosenFrequency(63);
+            }}>
+              63
+            </button>
             <button onClick={() => {
               setChosenFrequency(125);
             }}>
