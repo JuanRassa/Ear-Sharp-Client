@@ -325,7 +325,9 @@ useEffect(() => {
     <div>
 
       {isLoadingAudio && <h1>LOADING...</h1>}
+
       {!isLoadingAudio && !isExerciseRunning && <button onClick={handleBeginExercise}>I am ready!</button>}
+      
       <canvas ref={canvasRef} className="canvas" style={{display: isExerciseRunning ? "block" : "none"}}></canvas>
       
       {isExerciseRunning ? 
