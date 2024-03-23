@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Himalaya from "../../assets/audio/4.Himalaya.mp3"
 import Alpes from "../../assets/audio/8.Alpes.mp3"
 import Paramo from "../../assets/audio/9.Paramo.mp3"
@@ -10,8 +10,8 @@ import Aconcagua_Cocuy from "../../assets/audio/10.Aconcagua-Cocuy.mp3"
 // const testAudioFile = "https://cdn.freesound.org/previews/725/725677_4409240-hq.mp3" // "jazz"
 // const testAudioFile = Himalaya
 // const testAudioFile = Alpes
-// const testAudioFile = Paramo
-const testAudioFile = Aconcagua_Cocuy
+const testAudioFile = Paramo
+// const testAudioFile = Aconcagua_Cocuy
 
 fetch(testAudioFile)
 const E_AudioAndPeakBoost = () => {
@@ -121,7 +121,7 @@ const E_AudioAndPeakBoost = () => {
     filter.connect(audioContext.destination);
     setIsFilterConnected(true)
   }
-
+  console.log("audioContext", audioContext)
   console.log("filter freqency", filter?.frequency.value)
   console.log("filter gain", filter?.gain.value)
   console.log("FREQ", frequencyGuess)
@@ -191,11 +191,124 @@ const E_AudioAndPeakBoost = () => {
   }, [filter])
 
 //  ↓↓ When filter connection ✓ start audio and end loading stauts ↓↓
+const canvasRef = useRef(null);
 useEffect(() => {
   if (isFilterConnected) {
     source.start()
     setIsLoadingAudio(false)
   }
+
+  if (isFilterConnected) {
+    const canvas = canvasRef.current;
+    //config canvas
+    canvas.width = window.innerWidth * 0.7;
+    canvas.height = 600;
+    const ctx = canvas.getContext("2d");
+
+    const analyser = audioContext.createAnalyser();
+    // source.connect(analyser);
+    // analyser.connect(audioContext.destination);
+    source.connect(filter).connect(audioContext.destination); // Connect filter to both destination and AnalyserNode
+    filter.connect(analyser); // Connect filter to AnalyserNode
+    analyser.connect(audioContext.destination); // Connect AnalyserNode to destination
+
+
+    // Define the desired frequency range (20Hz to 20000Hz)
+    const minFrequency = 20;
+    const maxFrequency = 20000;
+    const fftSize = Math.pow(2, Math.ceil(Math.log2(maxFrequency / minFrequency)));
+    analyser.fftSize = fftSize;
+
+    const bufferLength = analyser.frequencyBinCount,
+      dataArray = new Uint8Array(bufferLength),
+      WIDTH = canvas.width,
+      HEIGHT = canvas.height,
+      barWidth = (WIDTH / bufferLength) * 2.5;
+    let barHeight = null,
+      x = null;
+  
+    //core logic for the visualizer
+    const timeouts = [];
+    const renderFrame = () => {
+      // ctx.fillStyle = "rgba(0,0,0,0)";
+      // requestAnimationFrame(renderFrame);
+      // x = 0;
+      
+      // analyser.getByteFrequencyData(dataArray);
+      
+      // ctx.fillRect(0, 0, WIDTH, HEIGHT);
+      
+      // for (let i = 0; i < bufferLength; i++) {
+      //   //color based upon frequency
+      //   barHeight = dataArray[i];
+      //   let 
+      //     r = barHeight + 22 * (i / bufferLength),
+      //     g = 333 * (i / bufferLength),
+      //     b = 47;
+      //   ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+      //   ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
+      //   x += barWidth + 1;
+
+
+
+      ctx.fillStyle = "rgba(0,0,0,0)";
+      requestAnimationFrame(renderFrame);
+      x = 0;
+      
+      analyser.getByteFrequencyData(dataArray);
+      
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+      
+      const minFrequency = 20; // Minimum frequency (Hz)
+      const maxFrequency = 20000; // Maximum frequency (Hz)
+      const logMin = Math.log(minFrequency);
+      const logMax = Math.log(maxFrequency);
+    
+      for (let i = 0; i < bufferLength; i++) {
+        // Calculate the logarithmic index for the current frequency bin
+        const logIndex = (Math.log(i + 1) / Math.log(bufferLength)) * bufferLength;
+    
+        // Calculate the corresponding frequency for the current index
+        const frequency = Math.exp(logIndex * (logMax - logMin) / bufferLength + logMin);
+    
+        // Use the frequency to find the closest bin in the dataArray
+        const closestIndex = Math.floor(frequency / (audioContext.sampleRate / bufferLength));
+    
+        // Use the closest bin to get the corresponding frequency data
+        const logFrequencyData = dataArray[closestIndex];
+    
+        // Color based upon frequency
+        barHeight = logFrequencyData;
+        let 
+          r = barHeight + 60 * (i / bufferLength),
+          g = 333 * (i / bufferLength),
+          b = 47;
+        ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+    
+        // Draw the bar
+        ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
+        x += barWidth + 1;
+
+        
+        //Allows visualizer to overlay on a background/video by clearing the rects after painting.
+        let timer = setTimeout(() => {
+          ctx.clearRect(0, 0, WIDTH, HEIGHT);
+        }, 50);
+        timeouts.push(timer);
+      }
+
+
+    }
+    //Clears the accumulating timeouts.
+  setTimeout(() => {
+    for (let i = 0; i < timeouts.length; i++) {
+      return clearTimeout(timeouts[i]);
+    }
+  }, 51);
+
+  renderFrame();
+  };
+
 }, [isFilterConnected])
 
   //  ↓↓ Handle on/off of the filter by toggling gain between 0 and 12 ↓↓
@@ -215,10 +328,12 @@ useEffect(() => {
   }, [isFilterActive])
   //  ↑↑  AUDIO'S LOGIC  ↑↑
 
+
+
   return (
     <div>
       {isLoadingAudio ? <h1>LOADING...</h1> : <button onClick={handleBeginExercise}>I am ready!</button>}
-
+      <canvas ref={canvasRef} className="canvas"></canvas>
       <p>Score: {score}</p>
       {isExerciseDone ? <p>Completed</p> : <p>Round {currentRound} of {rounds}</p>}
       {isExerciseRunning ? 
@@ -368,6 +483,7 @@ useEffect(() => {
         :   
         <></>
       }
+      
     </div>
   );
 }

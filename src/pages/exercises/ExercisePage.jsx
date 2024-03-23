@@ -3,6 +3,9 @@ import React from 'react'
 import AudioAndEQ from './AudioAndEQ';
 import E_AudioAndPeakBoost from './E_AudioAndPeakBoost';
 import P_AudioAndPeakBoost from '../practice/P_AudioAndPeakBoost';
+// import AudioVisualizer from './analyser';
+
+// import AudioVisualizer from './analyser';
 
 const ExercisePage = () => {
   
@@ -11,8 +14,9 @@ const ExercisePage = () => {
 			{/* <AudioAndEQ></AudioAndEQ> */}
 			<hr/>
 			<hr/>
-			{/* <E_AudioAndPeakBoost/> */}
-			<P_AudioAndPeakBoost/>
+			{/* <AudioVisualizer/> */}
+			<E_AudioAndPeakBoost/>
+			{/* <P_AudioAndPeakBoost/> */}
 		</>
   )
 }
