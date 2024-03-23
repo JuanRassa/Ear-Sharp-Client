@@ -3,6 +3,7 @@ import Himalaya from "../../assets/audio/4.Himalaya.mp3"
 import Alpes from "../../assets/audio/8.Alpes.mp3"
 import Paramo from "../../assets/audio/9.Paramo.mp3"
 import Aconcagua_Cocuy from "../../assets/audio/10.Aconcagua-Cocuy.mp3"
+import { Link } from 'react-router-dom'
 
 // const testAudioFile = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3"
 // const testAudioFile = "https://cdn.freesound.org/previews/263/263860_3162775-hq.mp3"
@@ -23,6 +24,7 @@ const E_AudioAndPeakBoost = () => {
   const [score, setScore] = useState(0)
   const [chosenFrequency, setChosenFrequency] = useState(null)
   const [randomIndex, setRandomIndex] = useState(0)
+  const [showResume, setShowResume] = useState(false)
 
   const incrementRound = () => {
     setCurrentRound((prev) => prev + 1)
@@ -50,6 +52,7 @@ const E_AudioAndPeakBoost = () => {
   const handleEndExercise = () => {
     setIsExerciseDone(true)
     setIsExerciseRunning(false)
+    setShowResume(true)
   }
 
   //  ↓↓ Handle the End of the Exercise ↓↓
@@ -121,7 +124,7 @@ const E_AudioAndPeakBoost = () => {
     // filter.connect(audioContext.destination);
     setIsFilterConnected(true)
   }
-  console.log("audioContext", audioContext)
+  // console.log("audioContext", audioContext)
   console.log("filter freqency", filter?.frequency.value)
   console.log("filter gain", filter?.gain.value)
   console.log("FREQ", frequencyGuess)
@@ -160,7 +163,6 @@ const E_AudioAndPeakBoost = () => {
 
   const changeFreq = (indexOfFreq) => {
     if(filter) {
-      console.log(filter.frequency)
       setFrequencyGuess(parseInt(arrOfFrequencies[indexOfFreq], 10));
       filter.frequency.value = parseInt(arrOfFrequencies[indexOfFreq], 10)
     }
@@ -306,88 +308,31 @@ useEffect(() => {
   //  ↑↑  AUDIO'S LOGIC  ↑↑
 
 
+  const resumeJSX = () => {
+    return (
+      <>
+        <p>You scored: {score} </p>
+        <p>Wanna try again?</p>
+        <button>Yes</button>
+        <Link to={"/my-portal"}>No</Link>
+      </>
+    )
+  }
+
+
 
   return (
     <div>
-      {isLoadingAudio ? <h1>LOADING...</h1> : <button onClick={handleBeginExercise}>I am ready!</button>}
-      <canvas ref={canvasRef} className="canvas"></canvas>
-      <p>Score: {score}</p>
-      {isExerciseDone ? <p>Completed</p> : <p>Round {currentRound} of {rounds}</p>}
+
+      {isLoadingAudio && <h1>LOADING...</h1>}
+      {!isLoadingAudio && !isExerciseRunning && <button onClick={handleBeginExercise}>I am ready!</button>}
+      <canvas ref={canvasRef} className="canvas" style={{display: isExerciseRunning ? "block" : "none"}}></canvas>
+      
       {isExerciseRunning ? 
         <div className='E_AudioAndPeakBoost__exercise'>
-          <div>
-          <div className='E_AudioAndPeakBoost__exercise__options w-100 flex justify-center'>
-            <button onClick={() => {
-              changeFreq(0);
-            }}>
-              63
-            </button>
-            <button onClick={() => {
-              changeFreq(1);
-            }}>
-              125
-            </button>
-            <button onClick={() => {
-              changeFreq(2);
-            }}>
-              250
-            </button>
-            <button onClick={() => {
-              changeFreq(3);
-            }}>
-              500
-            </button>
-            <button onClick={() => {
-              changeFreq(4);
-            }}>
-              1000
-            </button>
-            <button onClick={() => {
-              changeFreq(5);
-            }}>
-              2000
-            </button>
-            <button onClick={() => {
-              changeFreq(6);
-            }}>
-              4000
-            </button>
-            <button onClick={() => {
-              changeFreq(7);
-            }}>
-              8000
-            </button>
-            <button onClick={() => {
-              changeFreq(8);
-            }}>
-              16000
-            </button>
-          </div>
-          </div>
-          <div>
-            <label htmlFor="gainInput">Gain (dB):</label>
-            <input
-              type="number"
-              id="gainInput"
-              value={gain}
-              onChange={handleGainChange}
-              min={-40}
-              max={40}
-              step={0.1}
-            />
-          </div>
-          <div>
-            <label htmlFor="qValueInput">Q Value:</label>
-            <input
-              type="number"
-              id="qValueInput"
-              value={qValue}
-              onChange={handleQValueChange}
-              min={0.1}
-              max={100}
-              step={0.1}
-            />
-          </div>
+          <p>Score: {score}</p>
+          {isExerciseDone ? <p>Completed</p> : <p>Round {currentRound} of {rounds}</p>}
+          
           <div>
             {/* <button onClick={()=>{source.start()}}>Start</button> */}
             <button onClick={handlePlay} disabled={isPlaying}>
@@ -460,6 +405,8 @@ useEffect(() => {
         :   
         <></>
       }
+
+      {showResume && resumeJSX()}
       
     </div>
   );
