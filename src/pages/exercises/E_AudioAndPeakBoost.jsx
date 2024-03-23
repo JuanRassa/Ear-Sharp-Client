@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 
-const testAudioFile = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3"
+// const testAudioFile = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3"
+// const testAudioFile = "https://cdn.freesound.org/previews/263/263860_3162775-hq.mp3"
+const testAudioFile = "https://cdn.freesound.org/previews/129/129652_1105584-hq.mp3" // cool drums
 fetch(testAudioFile)
 const E_AudioAndPeakBoost = () => {
   //  ↓↓  GAME'S LOGIC  ↓↓
@@ -29,11 +31,10 @@ const E_AudioAndPeakBoost = () => {
     source.connect(audioContext.destination);
   }
   const handleNextRound = () => {
-    // handleStop();
     setIsFilterActive(false)
     if(chosenFrequency === frequencyGuess) incrementScore()
     incrementRound();
-
+    setIsFilterActive(false)
     setRandomIndex(randomFreqIndex())
     handleFrequencyChange()
   }
@@ -71,15 +72,17 @@ const E_AudioAndPeakBoost = () => {
     8000,
     16000
   ]
+  const [isLoadingAudio, setIsLoadingAudio] = useState(true)
   const [audioContext, setAudioContext] = useState(null);
   const [source, setSource] = useState(null);
+  const [isFilterSet, setIsFilterSet] = useState(false)
+  const [isFilterConnected, setIsFilterConnected] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false);
-  const [filterNode, setFilterNode] = useState(null);
   const [frequencyGuess, setFrequencyGuess] = useState(arrOfFrequencies[5]); // Default frequency = 1000
   const [filter, setFilter] = useState(null)
-  const [gain, setGain] = useState(9); // Default gain in dB
+  const [gain, setGain] = useState(0); // Default gain in dB
   const [qValue, setQValue] = useState(3); // Default Q value
-  const [isFilterActive, setIsFilterActive] = useState(true);
+  const [isFilterActive, setIsFilterActive] = useState(false);
 
   const buildUpAudioSource = () => {
     fetch(testAudioFile)
@@ -103,10 +106,10 @@ const E_AudioAndPeakBoost = () => {
     newFilter.gain.value = gain; // Convert gain to dB
     setFilter(newFilter)
   }
-  
   const connectFilter = () => {
     source.connect(filter);
     filter.connect(audioContext.destination);
+    setIsFilterConnected(true)
   }
 
   console.log("source", source)
@@ -120,32 +123,6 @@ const E_AudioAndPeakBoost = () => {
   const handlePlay = () => {
     if (!audioContext) return;
     audioContext.resume()
-    // Fetch audio file
-    // fetch(testAudioFile)
-    //   .then(response => response.arrayBuffer())
-    //   .then(arrayBuffer => {
-    //     audioContext.decodeAudioData(arrayBuffer, buffer => {
-    //       const audioSource = audioContext.createBufferSource();
-    //       audioSource.buffer = buffer;
-    //       if (isFilterActive) {
-    //         const filter = audioContext.createBiquadFilter();
-    //         filter.type = 'peaking'; // Bell-shaped filter
-    //         filter.frequency.value = frequency;
-    //         filter.Q.value = qValue;
-    //         filter.gain.value = convertGainToDecibels(gain); // Convert gain to dB
-
-    //         audioSource.connect(filter);
-    //         filter.connect(audioContext.destination);
-    //       } else {
-    //         audioSource.connect(audioContext.destination);
-    //       }
-
-    //       audioSource.start();
-    //       setSource(audioSource);
-    //       setIsPlaying(true);
-    //     });
-    //   })
-    //   .catch(error => console.error('Error loading audio file:', error));
   };
   // Function to convert gain to decibels
   const handleStop = () => {
@@ -154,8 +131,7 @@ const E_AudioAndPeakBoost = () => {
       setIsPlaying(false);
     }
   };
-  const handleFrequencyChange = event => {
-    console.log("RANDOM INDEX", randomIndex)
+  const handleFrequencyChange = () => {
     setFrequencyGuess(parseInt(arrOfFrequencies[randomIndex - 1], 10));
     filter.frequency.value = parseInt( arrOfFrequencies[randomIndex - 1], 10);
   };
@@ -193,34 +169,50 @@ const E_AudioAndPeakBoost = () => {
     };
   }, []);
 
-  //  ↓↓ Execute the Audio Source Build Up once the Audio Context exists ↓↓
+  //  ↓↓ When audioContext ✓ Build Up Audio Source ↓↓
   useEffect(() => {
     if(audioContext) buildUpAudioSource();
   }, [audioContext])
-
+  
+  //  ↓↓ When audio source ✓ Build Up BiQud Peak Filter ↓↓
   useEffect(() => {
-    console.log("filterUSE EFFECT", filter)
-    if(filter) {
-      connectFilter()
-    }
+    if(source) buildUpFilter();
+  }, [source])
+  
+  //  ↓↓ When filter ✓ Connect Filter to the Audio Context ↓↓
+  useEffect(() => {
+    if(filter) connectFilter()
   }, [filter])
 
+//  ↓↓ When filter connection ✓ start audio and end loading stauts ↓↓
+useEffect(() => {
+  if (isFilterConnected) {
+    source.start()
+    setIsLoadingAudio(false)
+  }
+}, [isFilterConnected])
+
+  //  ↓↓ Handle on/off of the filter by toggling gain between 0 and 12 ↓↓
   useEffect(() => {
+    if(!filter) return;
     if(isFilterActive) {
-      source?.connect(filter);
-      filter?.connect(audioContext.destination);
+      setGain(12);
+      filter.gain.value = 12;
+      // source?.connect(filter);
+      // filter?.connect(audioContext.destination);
     } else {
-      source?.disconnect(filter);
-      filter?.disconnect(audioContext.destination);
+      setGain(0);
+      filter.gain.value = 0;
+      // source?.disconnect(filter);
+      // filter?.disconnect(audioContext.destination);
     }
   }, [isFilterActive])
   //  ↑↑  AUDIO'S LOGIC  ↑↑
 
   return (
     <div>
-      <button onClick={() => {
-        handleBeginExercise()
-      }}>{isExerciseRunning ? "Stop" : "Begin"}</button>
+      {isLoadingAudio ? <h1>LOADING...</h1> : <button onClick={handleBeginExercise}>I am ready!</button>}
+
       <p>Score: {score}</p>
       {isExerciseDone ? <p>Completed</p> : <p>Round {currentRound} of {rounds}</p>}
       {isExerciseRunning ? 
@@ -294,7 +286,7 @@ const E_AudioAndPeakBoost = () => {
             />
           </div>
           <div>
-            <button onClick={()=>{source.start()}}>Start</button>
+            {/* <button onClick={()=>{source.start()}}>Start</button> */}
             <button onClick={handlePlay} disabled={isPlaying}>
               Resume
             </button>
@@ -305,7 +297,6 @@ const E_AudioAndPeakBoost = () => {
               {isFilterActive ? 'Deactivate Filter' : 'Activate Filter'}
             </button>
             <button onClick={()=>{buildUpFilter()}}>SET UP FILTER</button>
-            {/* <button onClick={() => {connectFilter()}}>CONNECT FILTER</button> */}
           </div>
           <div className='E_AudioAndPeakBoost__exercise__options w-100 flex justify-center'>
             <button onClick={() => {

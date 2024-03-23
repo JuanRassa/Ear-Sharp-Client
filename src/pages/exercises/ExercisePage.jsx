@@ -12,6 +12,7 @@ const ExercisePage = () => {
 			<hr/>
 			<hr/>
 			<E_AudioAndPeakBoost/>
+			{/* <P_AudioAndPeakBoost/> */}
 		</>
   )
 }
