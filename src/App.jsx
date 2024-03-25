@@ -93,7 +93,7 @@ function App() {
             } 
           />
           <Route 
-            path='/exercises' 
+            path='/exercises/:code' 
             element={
               <IsLogged>
                 <RoleGate allowedRole="Solo">

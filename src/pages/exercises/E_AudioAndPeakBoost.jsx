@@ -9,13 +9,8 @@ import { Link } from 'react-router-dom'
 // const testAudioFile = "https://cdn.freesound.org/previews/263/263860_3162775-hq.mp3"
 // const testAudioFile = "https://cdn.freesound.org/previews/129/129652_1105584-hq.mp3" // cool drums
 // const testAudioFile = "https://cdn.freesound.org/previews/725/725677_4409240-hq.mp3" // "jazz"
-const testAudioFile = Himalaya
-// const testAudioFile = Alpes
-// const testAudioFile = Paramo
-// const testAudioFile = Aconcagua_Cocuy
 
-fetch(testAudioFile)
-const E_AudioAndPeakBoost = () => {
+const E_AudioAndPeakBoost = ({audioTrack}) => {
 
   //  ↓↓  GAME'S LOGIC  ↓↓
   const [isExerciseRunning, setIsExerciseRunning] = useState(false)
@@ -109,7 +104,7 @@ const E_AudioAndPeakBoost = () => {
   const [isFilterActive, setIsFilterActive] = useState(false);
 
   const buildUpAudioSource = () => {
-    fetch(testAudioFile)
+    fetch(audioTrack)
       .then(response => response.arrayBuffer())
       .then(arrayBuffer => {
         audioContext.decodeAudioData(arrayBuffer, buffer => {
@@ -321,7 +316,8 @@ useEffect(() => {
       <button
         onClick={handleBeginExercise}
       >
-        {showResume ? "Do it again" : "I am ready, start"}
+        I am ready, start
+        {/* {showResume ? "Do it again" : "I am ready, start"} */}
       </button>
     )
   }
@@ -330,8 +326,8 @@ useEffect(() => {
       <>
         <p>You scored: {score} </p>
         <p>Wanna try again?</p>
-        { initButton() }
-        <a href="/my-portal">No</a>
+        {/* { initButton() } */}
+        <a href="/my-portal">Finish</a>
       </>
     )
   }
@@ -343,7 +339,7 @@ useEffect(() => {
 
       {isLoadingAudio && <h1>LOADING...</h1>}
 
-      {!isLoadingAudio && !isExerciseRunning && !isExerciseDone && <button onClick={handleBeginExercise}>{ initButton() }</button>}
+      {!isLoadingAudio && !isExerciseRunning && !isExerciseDone &&  initButton() }
       
       <canvas ref={canvasRef} className="canvas" style={{display: isExerciseRunning ? "block" : "none"}}></canvas>
       
@@ -351,7 +347,7 @@ useEffect(() => {
         <div className='E_AudioAndPeakBoost__exercise'>
           <p>Score: {score}</p>
           <p>Round {currentRound} of {rounds}</p>
-          {showCorrectAnswer && <p onClick={() => { handleNextRound()}}>The correct answer was: {frequencyGuess}Hz</p>}
+          {showCorrectAnswer && <p>The correct answer was: {frequencyGuess}Hz</p>}
           <div>
             {/* <button onClick={()=>{source.start()}}>Start</button> */}
             <button onClick={handlePlay} disabled={isPlaying}>
