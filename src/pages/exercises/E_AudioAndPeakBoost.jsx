@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import Himalaya from "../../assets/audio/4.Himalaya.mp3"
 import Alpes from "../../assets/audio/8.Alpes.mp3"
 import Paramo from "../../assets/audio/9.Paramo.mp3"
@@ -9,13 +9,14 @@ import { Link } from 'react-router-dom'
 // const testAudioFile = "https://cdn.freesound.org/previews/263/263860_3162775-hq.mp3"
 // const testAudioFile = "https://cdn.freesound.org/previews/129/129652_1105584-hq.mp3" // cool drums
 // const testAudioFile = "https://cdn.freesound.org/previews/725/725677_4409240-hq.mp3" // "jazz"
-// const testAudioFile = Himalaya
+const testAudioFile = Himalaya
 // const testAudioFile = Alpes
 // const testAudioFile = Paramo
-const testAudioFile = Aconcagua_Cocuy
+// const testAudioFile = Aconcagua_Cocuy
 
 fetch(testAudioFile)
 const E_AudioAndPeakBoost = () => {
+
   //  ↓↓  GAME'S LOGIC  ↓↓
   const [isExerciseRunning, setIsExerciseRunning] = useState(false)
   const [isExerciseDone, setIsExerciseDone] = useState(false)
@@ -24,6 +25,7 @@ const E_AudioAndPeakBoost = () => {
   const [score, setScore] = useState(0)
   const [chosenFrequency, setChosenFrequency] = useState(null)
   const [randomIndex, setRandomIndex] = useState(0)
+  const [showCorrectAnswer, setShowCorrectAnswer] = useState(false)
   const [showResume, setShowResume] = useState(false)
 
   const incrementRound = () => {
@@ -37,11 +39,18 @@ const E_AudioAndPeakBoost = () => {
   }
   const handleBeginExercise = () => {
     setCurrentRound(0)
+    setScore(0)
+    setShowResume(false)
     if (currentRound === 0) incrementRound()
     setIsExerciseRunning(!isExerciseRunning)
     setRandomIndex(randomFreqIndex())
+    
+  }
+  const checkAnswer = () => {
+    setShowCorrectAnswer(true)
   }
   const handleNextRound = () => {
+    setShowCorrectAnswer(false)
     setIsFilterActive(false)
     if(chosenFrequency === frequencyGuess) incrementScore()
     incrementRound();
@@ -54,6 +63,11 @@ const E_AudioAndPeakBoost = () => {
     setIsExerciseRunning(false)
     setShowResume(true)
   }
+  const restartExercise = () => {
+    setScore(0)
+    setCurrentRound(0)
+    setIsExerciseDone(false)
+  }
 
   //  ↓↓ Handle the End of the Exercise ↓↓
   useEffect(() => {
@@ -64,9 +78,6 @@ const E_AudioAndPeakBoost = () => {
   //  ↓↓ Reset status for a new Exercise ↓↓
   useEffect(() => {
     if (isExerciseDone) {
-      setScore(0)
-      setCurrentRound(0)
-      setIsExerciseDone(false)
     }
   }, [isExerciseDone])
   //  ↑↑  GAME'S LOGIC  ↑↑
@@ -195,6 +206,7 @@ const E_AudioAndPeakBoost = () => {
 
 //  ↓↓ When filter connection ✓ start audio and end loading stauts ↓↓
 const canvasRef = useRef(null);
+
 useEffect(() => {
   if (isFilterConnected) {
     source.start()
@@ -234,7 +246,7 @@ useEffect(() => {
     const timeouts = [];
     const renderFrame = () => {
       ctx.fillStyle = "rgba(0,0,0,0)";
-      requestAnimationFrame(renderFrame);
+      requestAnimationFrame(renderFrame)
       x = 0;
   
       analyser.getByteFrequencyData(dataArray);
@@ -296,25 +308,30 @@ useEffect(() => {
     if(isFilterActive) {
       setGain(12);
       filter.gain.value = 12;
-      // source?.connect(filter);
-      // filter?.connect(audioContext.destination);
     } else {
       setGain(0);
       filter.gain.value = 0;
-      // source?.disconnect(filter);
-      // filter?.disconnect(audioContext.destination);
     }
   }, [isFilterActive])
   //  ↑↑  AUDIO'S LOGIC  ↑↑
 
 
+  const initButton = () => {
+    return (
+      <button
+        onClick={handleBeginExercise}
+      >
+        {showResume ? "Do it again" : "I am ready, start"}
+      </button>
+    )
+  }
   const resumeJSX = () => {
     return (
       <>
         <p>You scored: {score} </p>
         <p>Wanna try again?</p>
-        <button>Yes</button>
-        <Link to={"/my-portal"}>No</Link>
+        { initButton() }
+        <a href="/my-portal">No</a>
       </>
     )
   }
@@ -326,15 +343,15 @@ useEffect(() => {
 
       {isLoadingAudio && <h1>LOADING...</h1>}
 
-      {!isLoadingAudio && !isExerciseRunning && <button onClick={handleBeginExercise}>I am ready!</button>}
+      {!isLoadingAudio && !isExerciseRunning && !isExerciseDone && <button onClick={handleBeginExercise}>{ initButton() }</button>}
       
       <canvas ref={canvasRef} className="canvas" style={{display: isExerciseRunning ? "block" : "none"}}></canvas>
       
       {isExerciseRunning ? 
         <div className='E_AudioAndPeakBoost__exercise'>
           <p>Score: {score}</p>
-          {isExerciseDone ? <p>Completed</p> : <p>Round {currentRound} of {rounds}</p>}
-          
+          <p>Round {currentRound} of {rounds}</p>
+          {showCorrectAnswer && <p onClick={() => { handleNextRound()}}>The correct answer was: {frequencyGuess}Hz</p>}
           <div>
             {/* <button onClick={()=>{source.start()}}>Start</button> */}
             <button onClick={handlePlay} disabled={isPlaying}>
@@ -395,13 +412,17 @@ useEffect(() => {
             </button>
           </div>
           <div className=' w-100 flex justify-center'>
-            <button 
-              onClick={() => {
-                handleNextRound()
-              }}
+            {!showCorrectAnswer && <button 
+              onClick={() => { checkAnswer() }}
             >
               Check answer
-            </button>
+            </button> }
+            {showCorrectAnswer && <button 
+              onClick={() => { handleNextRound() }}
+            >
+              Continue
+            </button> }
+            
           </div>
         </div>
         :   

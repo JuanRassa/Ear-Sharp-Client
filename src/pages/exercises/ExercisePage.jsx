@@ -1,5 +1,6 @@
 // https://codepen.io/Rumyra/pen/oPxvYB/
 import React from 'react'
+import { Link } from 'react-router-dom';
 import AudioAndEQ from './AudioAndEQ';
 import E_AudioAndPeakBoost from './E_AudioAndPeakBoost';
 import P_AudioAndPeakBoost from '../practice/P_AudioAndPeakBoost';
@@ -9,11 +10,10 @@ import P_AudioAndPeakBoost from '../practice/P_AudioAndPeakBoost';
 
 const ExercisePage = () => {
   
+
   return (
     <>
 			{/* <AudioAndEQ></AudioAndEQ> */}
-			<hr/>
-			<hr/>
 			{/* <AudioVisualizer/> */}
 			<E_AudioAndPeakBoost/>
 			{/* <P_AudioAndPeakBoost/> */}
