@@ -3,7 +3,6 @@ import axios from 'axios';
 const baseURL = `${import.meta.env.VITE_PROJECTS_API}/api`;
 
 export const createNewProgressRegister = (jwt, email, exercise_code, correct_answers) => {
-  alert(jwt)
   return axios.post(`${baseURL}/exercises-progress/create`, 
     {
       "user_email": email,

@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate  } from 'react-router-dom'
 import { createNewProgressRegister } from '../../api/exercises_progress.api'
 import { AuthContext } from '../../context/auth.context'
+
+import EndTurnPopup from './EndTurnPopup'
 
 // const testAudioFile = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3"
 // const testAudioFile = "https://cdn.freesound.org/previews/263/263860_3162775-hq.mp3"
@@ -10,6 +12,7 @@ import { AuthContext } from '../../context/auth.context'
 
 const E_AudioAndPeakBoost = ({ audioTrack, userEmail, exercise_code, questions_quantity }) => {
 	const { retrieveToken } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   //  ↓↓  GAME'S LOGIC  ↓↓
   const [isExerciseRunning, setIsExerciseRunning] = useState(false)
@@ -17,7 +20,6 @@ const E_AudioAndPeakBoost = ({ audioTrack, userEmail, exercise_code, questions_q
   const [rounds, setRounds] = useState(questions_quantity)
   const [currentRound, setCurrentRound] = useState(0)
   const [score, setScore] = useState(0)
-  const [chosenFrequency, setChosenFrequency] = useState(null)
   const [randomIndex, setRandomIndex] = useState(0)
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false)
   const [showResume, setShowResume] = useState(false)
@@ -97,6 +99,7 @@ const E_AudioAndPeakBoost = ({ audioTrack, userEmail, exercise_code, questions_q
   const [isFilterConnected, setIsFilterConnected] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false);
   const [frequencyGuess, setFrequencyGuess] = useState(arrOfFrequencies[5]); // Default frequency = 1000
+  const [chosenFrequency, setChosenFrequency] = useState(null)
   const [filter, setFilter] = useState(null)
   const [gain, setGain] = useState(0); // Default gain in dB
   const [qValue, setQValue] = useState(3); // Default Q value
@@ -215,8 +218,7 @@ useEffect(() => {
     const ctx = canvas.getContext("2d");
 
     const analyser = audioContext.createAnalyser();
-    // source.connect(analyser);
-    // analyser.connect(audioContext.destination);
+
     source.connect(filter).connect(audioContext.destination); // Connect filter to both destination and AnalyserNode
     filter.connect(analyser); // Connect filter to AnalyserNode
     analyser.connect(audioContext.destination); // Connect AnalyserNode to destination
@@ -309,6 +311,12 @@ useEffect(() => {
   }, [isFilterActive])
   //  ↑↑  AUDIO'S LOGIC  ↑↑
 
+  useEffect(() => {
+    if (showResume) triggerSubmitProgress()
+  }, [showResume])
+
+
+
   const triggerSubmitProgress = async () => {
     try {
       const createdProg = await createNewProgressRegister(retrieveToken(), userEmail, exercise_code, score)
@@ -324,7 +332,6 @@ useEffect(() => {
         onClick={handleBeginExercise}
       >
         I am ready, start
-        {/* {showResume ? "Do it again" : "I am ready, start"} */}
       </button>
     )
   }
@@ -332,13 +339,35 @@ useEffect(() => {
     return (
       <>
         <p>You scored: {score} </p>
-        <p>Wanna try again?</p>
-        {/* { initButton() } */}
-        <button onClick={() => {
-          triggerSubmitProgress()
-        }}>Submit</button>
         <a href="/my-portal">Finish</a>
       </>
+    )
+  }
+
+  const correctAnswerJSX = () => {
+    return (
+      <div className='EndTurnPopup' style={{position: "fixed", display: "flex", width: "100vw",height:"100vh", background:"#000"}} >
+      <div>
+        {frequencyGuess === chosenFrequency && (
+          <div>
+            <p>Correct answer: {frequencyGuess}</p>
+            <p>Your answer: {chosenFrequency}</p>
+            <p>Well done!</p>
+          </div>
+        )}
+        {frequencyGuess !== chosenFrequency && (
+          <div>
+            <p>Correct answer: {frequencyGuess}</p>
+            <p>Your answer: {chosenFrequency}</p>
+            <p>Ups! Sharpen your ear</p>
+          </div>
+        )}
+        <button onClick={() => {
+          setShowCorrectAnswer(false)
+          handleNextRound()
+        }}>Continue</button>
+      </div>  
+    </div>
     )
   }
 
@@ -346,7 +375,7 @@ useEffect(() => {
 
   return (
     <div>
-
+      {showCorrectAnswer && correctAnswerJSX()}
       {isLoadingAudio && <h1>LOADING...</h1>}
 
       {!isLoadingAudio && !isExerciseRunning && !isExerciseDone &&  initButton() }
