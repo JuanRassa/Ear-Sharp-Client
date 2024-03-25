@@ -6,7 +6,6 @@ export const signup = user => {
   return axios.post(`${baseURL}/signup`, user);
 };
 export const login = user => {
-  console.log(user);
   return axios.post(`${baseURL}/login`, user);
 };
 export const verify = storedToken => {

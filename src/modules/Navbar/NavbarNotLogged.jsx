@@ -29,7 +29,6 @@ const NavbarNotLogged = () => {
           </button>
         </>
       )}
-      <button onClick={toggleTheme}>{isDarkThemeOn ? 'dark' : 'light'}</button>
     </nav>
   );
 }

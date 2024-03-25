@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
-import Himalaya from "../../assets/audio/4.Himalaya.mp3"
-import Alpes from "../../assets/audio/8.Alpes.mp3"
-import Paramo from "../../assets/audio/9.Paramo.mp3"
-import Aconcagua_Cocuy from "../../assets/audio/10.Aconcagua-Cocuy.mp3"
 import { Link } from 'react-router-dom'
+import { createNewProgressRegister } from '../../api/exercises_progress.api'
+import { AuthContext } from '../../context/auth.context'
 
 // const testAudioFile = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3"
 // const testAudioFile = "https://cdn.freesound.org/previews/263/263860_3162775-hq.mp3"
 // const testAudioFile = "https://cdn.freesound.org/previews/129/129652_1105584-hq.mp3" // cool drums
 // const testAudioFile = "https://cdn.freesound.org/previews/725/725677_4409240-hq.mp3" // "jazz"
 
-const E_AudioAndPeakBoost = ({audioTrack}) => {
+const E_AudioAndPeakBoost = ({ audioTrack, userEmail, exercise_code }) => {
+	const { retrieveToken } = useContext(AuthContext);
 
   //  ↓↓  GAME'S LOGIC  ↓↓
   const [isExerciseRunning, setIsExerciseRunning] = useState(false)
@@ -310,6 +309,14 @@ useEffect(() => {
   }, [isFilterActive])
   //  ↑↑  AUDIO'S LOGIC  ↑↑
 
+  const triggerSubmitProgress = async () => {
+    try {
+      const createdProg = await createNewProgressRegister(retrieveToken(), userEmail, exercise_code, score)
+      return createdProg;
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const initButton = () => {
     return (
@@ -327,6 +334,9 @@ useEffect(() => {
         <p>You scored: {score} </p>
         <p>Wanna try again?</p>
         {/* { initButton() } */}
+        <button onClick={() => {
+          triggerSubmitProgress()
+        }}>Submit</button>
         <a href="/my-portal">Finish</a>
       </>
     )

@@ -16,15 +16,17 @@ const ExercisePage = () => {
 	const [exerciseInfo, setExerciseInfo] = useState(null)
 	const [setupAudio, setSetupAudio] = useState(false)
 	const [audioTrack, setAudioTrack] = useState("")
-	const { retrieveToken } = useContext(AuthContext);
+	const { retrieveToken,userContext: { user } } = useContext(AuthContext);
 	const { code } = useParams()
 
+
+	console.log("exerciseInfo", exerciseInfo)
 
 	const getExerciseInfoByCode = async () => {
     try {
       const request = await retrieveExerciseInfoByCode(retrieveToken(), code);
-      const users = await request.data;
-      setExerciseInfo(users)
+      const exerciseInfo = await request.data;
+      setExerciseInfo(exerciseInfo)
 
     } catch (error) {
       console.log(error)
@@ -37,7 +39,15 @@ const ExercisePage = () => {
   return (
     <>
 			{!setupAudio && <>
-			
+			{exerciseInfo && (
+				<div>
+					<p>Name: {exerciseInfo[0].name}</p>
+					<p>Code: {exerciseInfo[0].code}</p>
+					<p>Category: {exerciseInfo[0].category}</p>
+					<p>Number of Questions: {exerciseInfo[0].questions_quantity}</p>
+					<p>Percentage: {exerciseInfo[0].approvement_percentage}</p>
+				</div>
+			)}
 			<button onClick={() => {
 				setAudioTrack(Himalaya)
 			}}>
@@ -65,7 +75,15 @@ const ExercisePage = () => {
 			</button>
 			</>}
 
-			{setupAudio &&	<E_AudioAndPeakBoost audioTrack={audioTrack}/>}			
+			{	
+				setupAudio 
+				&&	
+				<	E_AudioAndPeakBoost 
+					audioTrack={audioTrack} 
+					userEmail={user.email}
+					exercise_code={exerciseInfo[0].code}
+				/>
+			}			
 		</>
   )
 }

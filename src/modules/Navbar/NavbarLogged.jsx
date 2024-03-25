@@ -49,9 +49,6 @@ function NavbarLogged() {
         <button>Home</button>
       </Link>
       {portalLinkButtonJSX()}
-      <Link to='/'>
-        <button>My Account</button>
-      </Link>
       {loggedContext.isLoggedIn && (
         <>
           <button
@@ -62,7 +59,6 @@ function NavbarLogged() {
           </button>
         </>
       )}
-      <button onClick={toggleTheme}>{isDarkThemeOn ? 'dark' : 'light'}</button>
     </nav>
   );
 }
