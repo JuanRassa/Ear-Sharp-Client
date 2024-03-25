@@ -8,13 +8,13 @@ import { AuthContext } from '../../context/auth.context'
 // const testAudioFile = "https://cdn.freesound.org/previews/129/129652_1105584-hq.mp3" // cool drums
 // const testAudioFile = "https://cdn.freesound.org/previews/725/725677_4409240-hq.mp3" // "jazz"
 
-const E_AudioAndPeakBoost = ({ audioTrack, userEmail, exercise_code }) => {
+const E_AudioAndPeakBoost = ({ audioTrack, userEmail, exercise_code, questions_quantity }) => {
 	const { retrieveToken } = useContext(AuthContext);
 
   //  ↓↓  GAME'S LOGIC  ↓↓
   const [isExerciseRunning, setIsExerciseRunning] = useState(false)
   const [isExerciseDone, setIsExerciseDone] = useState(false)
-  const [rounds, setRounds] = useState(5)
+  const [rounds, setRounds] = useState(questions_quantity)
   const [currentRound, setCurrentRound] = useState(0)
   const [score, setScore] = useState(0)
   const [chosenFrequency, setChosenFrequency] = useState(null)

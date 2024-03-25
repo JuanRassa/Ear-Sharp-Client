@@ -82,6 +82,7 @@ const ExercisePage = () => {
 					audioTrack={audioTrack} 
 					userEmail={user.email}
 					exercise_code={exerciseInfo[0].code}
+					questions_quantity = {exerciseInfo[0].questions_quantity}
 				/>
 			}			
 		</>
