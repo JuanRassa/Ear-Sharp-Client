@@ -20,7 +20,6 @@ const RoleGate = ({children, allowedRole}) => {
 
   return (
     <>
-      <h1>RoleGate</h1>
       {userContext.user.role === allowedRole ? children : <h3>NOT ALLOWED</h3>}
     </>
   )

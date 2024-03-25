@@ -16,7 +16,7 @@ const ExercisePage = () => {
 	const [exerciseInfo, setExerciseInfo] = useState(null)
 	const [setupAudio, setSetupAudio] = useState(false)
 	const [audioTrack, setAudioTrack] = useState("")
-	const { retrieveToken,userContext: { user } } = useContext(AuthContext);
+	const { retrieveToken, userContext: { user } } = useContext(AuthContext);
 	const { code } = useParams()
 
 

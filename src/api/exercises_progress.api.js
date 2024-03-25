@@ -18,3 +18,11 @@ export const createNewProgressRegister = (jwt, email, exercise_code, correct_ans
     }
   );
 };
+
+export const retrieveExerciseProgressByEmail = (jwt, email) => {
+  return axios.get(`${baseURL}/exercises-progress/${email}`,{
+    headers: {
+      Authorization: `Bearer ${jwt}`
+    }
+  });
+};

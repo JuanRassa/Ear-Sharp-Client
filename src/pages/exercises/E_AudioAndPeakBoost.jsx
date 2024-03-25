@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
-import { useNavigate  } from 'react-router-dom'
 import { createNewProgressRegister } from '../../api/exercises_progress.api'
 import { AuthContext } from '../../context/auth.context'
-
-import EndTurnPopup from './EndTurnPopup'
 
 // const testAudioFile = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/858/outfoxing.mp3"
 // const testAudioFile = "https://cdn.freesound.org/previews/263/263860_3162775-hq.mp3"
@@ -12,7 +9,6 @@ import EndTurnPopup from './EndTurnPopup'
 
 const E_AudioAndPeakBoost = ({ audioTrack, userEmail, exercise_code, questions_quantity }) => {
 	const { retrieveToken } = useContext(AuthContext);
-  const navigate = useNavigate();
 
   //  ↓↓  GAME'S LOGIC  ↓↓
   const [isExerciseRunning, setIsExerciseRunning] = useState(false)

@@ -14,6 +14,7 @@ import OrganizationAdmin from './pages/portals/OrganizationAdmin';
 import TeacherPortal from './pages/portals/TeacherPortal';
 import StudentPortal  from './pages/portals/StudentPortal';
 import SoloPortal from './pages/portals/SoloPortal';
+import MyHistory from './pages/exercises/MyHistory';
 import ExercisePage from './pages/exercises/ExercisePage';
 import NotFound404 from './pages/NotFound404';
 
@@ -88,6 +89,16 @@ function App() {
               <IsLogged>
                 <RoleGate allowedRole="Solo">
                   <SoloPortal /> 
+                </RoleGate> 
+              </IsLogged>
+            } 
+          />
+          <Route 
+            path='/my-history' 
+            element={
+              <IsLogged>
+                <RoleGate allowedRole="Solo">
+                  <MyHistory /> 
                 </RoleGate> 
               </IsLogged>
             } 

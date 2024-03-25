@@ -25,6 +25,7 @@ const SoloPortal = () => {
   const DisplayExercisesJSX = () => {
     return (
       <div>
+        <Link to="/my-history">My History</Link>
         {exercisesInfo.map(exercise => { return (
           <Link key={exercise.code} to={`/exercises/${exercise.code}`} className='ExerciseCard'>
             <h4>{exercise.name}</h4>
@@ -43,8 +44,6 @@ const SoloPortal = () => {
         <h2>Available Exercises</h2>
         {exercisesInfo.length !== 0 && DisplayExercisesJSX()}
       </section>
-      <hr />
-        <Link to="/exercises">Start Exercise</Link>
     </div>
   )
 }
